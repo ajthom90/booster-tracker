@@ -1,0 +1,46 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 100,
+      "url": "https://ll.thespacedevs.com/2.2.0/launcher/100/",
+      "flight_proven": true,
+      "serial_number": "B1058",
+      "status": "lost",
+      "details": "Veteran booster.",
+      "launcher_config": {
+        "id": 1,
+        "name": "Falcon 9 Block 5",
+        "family": "Falcon",
+        "full_name": "Falcon 9 Block 5",
+        "variant": "Block 5",
+        "description": "Latest Falcon 9 variant"
+      },
+      "image_url": "https://example.com/b1058.jpg",
+      "flights": 14,
+      "last_launch_date": "2022-12-23T12:00:00Z",
+      "first_launch_date": "2020-05-30T19:22:00Z",
+      "attempted_landings": 14,
+      "successful_landings": 13
+    },
+    {
+      "id": 101,
+      "url": "https://ll.thespacedevs.com/2.2.0/launcher/101/",
+      "flight_proven": true,
+      "serial_number": "B1067",
+      "status": "active",
+      "launcher_config": {
+        "id": 1,
+        "name": "Falcon 9 Block 5",
+        "family": "Falcon"
+      },
+      "flights": 22,
+      "first_launch_date": "2021-06-03T17:29:00Z",
+      "last_launch_date": "2026-04-15T10:00:00Z",
+      "attempted_landings": 22,
+      "successful_landings": 22
+    }
+  ]
+}
