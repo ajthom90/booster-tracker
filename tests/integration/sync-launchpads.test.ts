@@ -28,6 +28,6 @@ describe('syncLaunchpads', () => {
     expect(slc40.name).toBe('Space Launch Complex 40');
     expect(slc40.location).toBe('Cape Canaveral, FL, USA');
     expect(slc40.totalLaunches).toBe(200);
-    expect(slc40.slug).toBe('space-launch-complex-40');
+    expect(slc40.slug).toBe('space-launch-complex-40-80');
   });
 });

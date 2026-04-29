@@ -30,7 +30,7 @@ export async function syncLaunchpads(
 			countryCode: p.location?.country_code ?? null,
 			totalLaunches: p.total_launch_count ?? 0,
 			imageUrl: p.map_image ?? null,
-			slug: slugify(p.name)
+			slug: `${slugify(p.name)}-${p.id}`
 		}));
 		await upsertMany(db, launchpad, rows, 'id');
 		url = parsed.next ?? null;

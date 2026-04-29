@@ -48,7 +48,7 @@ export async function syncLaunches(
 							typeof loc.successful_landings === 'number' ? loc.successful_landings : 0,
 						attemptedLandings:
 							typeof loc.attempted_landings === 'number' ? loc.attempted_landings : 0,
-						slug: slugify(loc.abbrev ?? loc.name)
+						slug: `${slugify(loc.abbrev ?? loc.name)}-${loc.id}`
 					});
 				}
 			}
