@@ -1,10 +1,17 @@
 {
   "extends": ["stylelint-config-standard"],
   "rules": {
+    "property-disallowed-list": [
+      [
+        "/^margin-(left|right)$/",
+        "/^padding-(left|right)$/",
+        "/^border-(left|right)/"
+      ],
+      {
+        "message": "Use logical properties (margin-inline-*, padding-inline-*, border-inline-*) instead."
+      }
+    ],
     "declaration-property-value-disallowed-list": {
-      "/^margin-(left|right)$/": [".+"],
-      "/^padding-(left|right)$/": [".+"],
-      "/^border-(left|right)/": [".+"],
       "text-align": ["left", "right"]
     }
   },
