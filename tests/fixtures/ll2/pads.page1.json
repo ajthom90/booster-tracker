@@ -1,0 +1,21 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 80,
+      "name": "Space Launch Complex 40",
+      "location": { "name": "Cape Canaveral, FL, USA", "country_code": "USA" },
+      "total_launch_count": 200,
+      "map_image": "https://example.com/slc40.jpg"
+    },
+    {
+      "id": 39,
+      "name": "Launch Complex 39A",
+      "location": { "name": "Kennedy Space Center, FL, USA", "country_code": "USA" },
+      "total_launch_count": 50,
+      "map_image": "https://example.com/lc39a.jpg"
+    }
+  ]
+}
