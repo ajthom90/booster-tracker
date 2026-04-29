@@ -6,7 +6,12 @@
       "/^padding-(left|right)$/": [".+"],
       "/^border-(left|right)/": [".+"],
       "text-align": ["left", "right"]
-    },
-    "comments": "Phase 3 will enforce logical properties globally; for Phase 1 we only flag obvious LTR-physical declarations to keep the door open."
-  }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.svelte", "**/*.html"],
+      "customSyntax": "postcss-html"
+    }
+  ]
 }
