@@ -16,8 +16,8 @@ function statusToken(name: string): string {
 	// Map LL2's display status to our enum tokens.
 	const lower = name.toLowerCase();
 	if (lower.includes('success')) return 'success';
-	if (lower.includes('failure')) return 'failure';
 	if (lower.includes('partial')) return 'partial_failure';
+	if (lower.includes('failure')) return 'failure';
 	if (lower.includes('go') || lower.includes('tbd')) return 'upcoming';
 	if (lower.includes('flight')) return 'in_flight';
 	return 'unknown';
@@ -109,3 +109,5 @@ export async function syncLaunches(
 		url = parsed.next ?? null;
 	}
 }
+
+export const __statusTokenForTest = statusToken;
