@@ -35,18 +35,18 @@ Public access (Cloudflare Tunnel / Tailscale Funnel / reverse proxy) is **outsid
 
 ## 3. Tech stack
 
-| Concern | Choice | Why |
-|---|---|---|
-| Framework | **SvelteKit** | Single TS codebase, SSR, tiny client bundles, great fit for table-first apps |
-| Database | **SQLite** (via `better-sqlite3`) | Single file; perfect for a self-hosted, read-heavy mirror; trivial backup |
-| ORM | **Drizzle** | Type-safe SQL + migrations |
-| Tables | **TanStack Table** (Svelte adapter) | De facto primitive for sort/filter/column visibility |
-| i18n | **Paraglide JS** (Inlang) | Compile-time, type-safe, tree-shaken; native SvelteKit fit |
-| Charts | **Chart.js** or **uPlot** (lightweight) | SVG-renderable, no D3 unless needed |
-| Validation | **Zod** | Schema validation for LL2 responses |
-| Tests | **Vitest** + **Playwright** | Unit/integration + e2e |
-| Cron | **node-cron** (in-process) | One container, simplest path |
-| Deploy | **Docker** + **GitHub Container Registry** | Public-repo-friendly, free |
+| Concern    | Choice                                     | Why                                                                          |
+| ---------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
+| Framework  | **SvelteKit**                              | Single TS codebase, SSR, tiny client bundles, great fit for table-first apps |
+| Database   | **SQLite** (via `better-sqlite3`)          | Single file; perfect for a self-hosted, read-heavy mirror; trivial backup    |
+| ORM        | **Drizzle**                                | Type-safe SQL + migrations                                                   |
+| Tables     | **TanStack Table** (Svelte adapter)        | De facto primitive for sort/filter/column visibility                         |
+| i18n       | **Paraglide JS** (Inlang)                  | Compile-time, type-safe, tree-shaken; native SvelteKit fit                   |
+| Charts     | **Chart.js** or **uPlot** (lightweight)    | SVG-renderable, no D3 unless needed                                          |
+| Validation | **Zod**                                    | Schema validation for LL2 responses                                          |
+| Tests      | **Vitest** + **Playwright**                | Unit/integration + e2e                                                       |
+| Cron       | **node-cron** (in-process)                 | One container, simplest path                                                 |
+| Deploy     | **Docker** + **GitHub Container Registry** | Public-repo-friendly, free                                                   |
 
 ## 4. Data model
 
@@ -55,6 +55,7 @@ Six tables. SpaceX-only at sync time (filter on `agency` / `launch_service_provi
 ### Core entities
 
 **`booster`** — one row per LL2 `Launcher` for SpaceX
+
 - `id` (PK, from LL2)
 - `serial_number` (UNIQUE, e.g. "B1058")
 - `status` (active / inactive / expended / lost / retired / unknown)
@@ -65,6 +66,7 @@ Six tables. SpaceX-only at sync time (filter on `agency` / `launch_service_provi
 - `ll2_url`, `ll2_last_synced_at`
 
 **`launch`** — one row per launch
+
 - `id` (PK, LL2 UUID)
 - `slug` (UNIQUE, url-friendly e.g. "starlink-group-7-1")
 - `name`, `status`, `net` (launch time)
@@ -76,7 +78,8 @@ Six tables. SpaceX-only at sync time (filter on `agency` / `launch_service_provi
 
 **`launchpad`** — `name` (SLC-40), `full_name`, `location`, `country_code`, `total_launches`, `image_url`.
 
-**`landing_location`** — droneships *and* RTLS pads in one table:
+**`landing_location`** — droneships _and_ RTLS pads in one table:
+
 - `name` ("Of Course I Still Love You"), `abbrev` (OCISLY)
 - `location_type` (ASDS / RTLS / Ocean)
 - `successful_landings`, `attempted_landings`, `description`
@@ -84,8 +87,9 @@ Six tables. SpaceX-only at sync time (filter on `agency` / `launch_service_provi
 ### Relationships
 
 **`launch_booster`** (join table) — handles Falcon Heavy 3-booster flights:
+
 - `launch_id`, `booster_id`, `role` (core / side / null)
-- `flight_number` (this booster's *nth* flight)
+- `flight_number` (this booster's _nth_ flight)
 - `landing_attempted`, `landing_success`, `landing_type`
 - `landing_location_id` (FK)
 - PK: `(launch_id, booster_id, role)`
@@ -109,6 +113,7 @@ Six tables. SpaceX-only at sync time (filter on `agency` / `launch_service_provi
 ### Scheduling
 
 `node-cron` inside the SvelteKit Node server. Defaults (all overridable via env):
+
 - **Full sync** at 03:00 server-local time, daily.
 - **Incremental sync** every 30 min — refreshes only upcoming launches, launches in the last 30 days, and any record marked `stale` in `sync_state`.
 
@@ -174,7 +179,7 @@ Single compact query param `?v=<base64-encoded-JSON>` holding `{filters, sort, v
 
 ### localStorage presets
 
-"Save current view" stores current `?v=` payload under a user-chosen name. Per-device, no sync. A preset *is* a URL — same data shape.
+"Save current view" stores current `?v=` payload under a user-chosen name. Per-device, no sync. A preset _is_ a URL — same data shape.
 
 ### Export
 
@@ -249,6 +254,7 @@ Single page with **fleet-wide aggregates** that don't fit naturally on any one t
 ### Message files
 
 Per-locale JSON in `messages/`:
+
 ```
 messages/
   en.json      ← source of truth
@@ -296,6 +302,7 @@ Tables sort by raw column values, not localized strings — order is consistent 
 **Initial seed**: machine-translated (DeepL or similar) for `es`, `fr`, `de`, `ar`, `he`, `zh-Hans`. **Banner in non-English locales**: "Machine-translated — help improve it" linking to `/translate`.
 
 **Crowdsourcing**:
+
 - **Inlang Fink** primary path (`fink.inlang.com`) — translators log in with GitHub, edit in web UI, submit PRs. Repo is the source of truth.
 - **Crowdin** secondary path (free OSS plan) — bidirectional sync via GitHub Action. For translators who already use Crowdin.
 
@@ -347,6 +354,7 @@ booster-tracker/
 **In the public repo, ever**: nothing sensitive. `.env.example` shows empty placeholders + comments.
 
 **At runtime on the home server** — `.env` (chmod 600), referenced via `docker-compose.yml` `env_file:`:
+
 - `LL2_API_TOKEN` (optional — only if Patreon tier)
 - `ADMIN_TOKEN` (random string, gates `/admin/*`)
 - `PUBLIC_BASE_URL`
@@ -355,6 +363,7 @@ booster-tracker/
 - `LOG_LEVEL`
 
 **In GitHub Actions** — repo Secrets:
+
 - `GITHUB_TOKEN` (automatic, GHCR push)
 - `CROWDIN_API_TOKEN`, `CROWDIN_PROJECT_ID` (translation sync)
 
@@ -401,12 +410,12 @@ GH Action validates keys (already covered in 10).
 
 ## 13. Risks
 
-| Risk | Mitigation |
-|---|---|
-| **LL2 schema drift** | Zod parsing fails loudly on unknown fields rather than silently mis-storing |
+| Risk                                            | Mitigation                                                                                                 |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **LL2 schema drift**                            | Zod parsing fails loudly on unknown fields rather than silently mis-storing                                |
 | **Falcon Heavy edge cases** (3 boosters/launch) | Test fixtures from real Heavy launches (USSF-44, USSF-67, etc.); join-table model handles role per booster |
-| **Translation drift** | i18n-validate Action blocks PRs that introduce keys without all locales |
-| **Initial seed time** (hours on free tier) | Pre-seeded DB attached to GH Releases |
+| **Translation drift**                           | i18n-validate Action blocks PRs that introduce keys without all locales                                    |
+| **Initial seed time** (hours on free tier)      | Pre-seeded DB attached to GH Releases                                                                      |
 
 ## 14. Non-goals (v1)
 
@@ -419,7 +428,7 @@ GH Action validates keys (already covered in 10).
 - ❌ Comments, ratings, user-submitted content
 - ❌ Other launch providers (SpaceX-only sync filter)
 - ❌ Capsules / spacecraft / Starship as separate top-level views (Starship boosters appear if LL2 classifies them as Launchers)
-- ❌ Native mobile apps (mobile *web* is responsive but not phone-first)
+- ❌ Native mobile apps (mobile _web_ is responsive but not phone-first)
 - ❌ Push notifications / email / RSS
 
 ## 15. Open questions for implementation planning

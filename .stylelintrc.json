@@ -1,24 +1,20 @@
 {
-  "extends": ["stylelint-config-standard"],
-  "rules": {
-    "property-disallowed-list": [
-      [
-        "/^margin-(left|right)$/",
-        "/^padding-(left|right)$/",
-        "/^border-(left|right)/"
-      ],
-      {
-        "message": "Use logical properties (margin-inline-*, padding-inline-*, border-inline-*) instead."
-      }
-    ],
-    "declaration-property-value-disallowed-list": {
-      "text-align": ["left", "right"]
-    }
-  },
-  "overrides": [
-    {
-      "files": ["**/*.svelte", "**/*.html"],
-      "customSyntax": "postcss-html"
-    }
-  ]
+	"extends": ["stylelint-config-standard"],
+	"rules": {
+		"property-disallowed-list": [
+			["/^margin-(left|right)$/", "/^padding-(left|right)$/", "/^border-(left|right)/"],
+			{
+				"message": "Use logical properties (margin-inline-*, padding-inline-*, border-inline-*) instead."
+			}
+		],
+		"declaration-property-value-disallowed-list": {
+			"text-align": ["left", "right"]
+		}
+	},
+	"overrides": [
+		{
+			"files": ["**/*.svelte", "**/*.html"],
+			"customSyntax": "postcss-html"
+		}
+	]
 }
