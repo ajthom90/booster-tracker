@@ -16,7 +16,7 @@ export const ll2PadSchema = z.object({
     name: z.string().optional(),
     country_code: z.string().optional()
   }).nullable().optional(),
-  total_launch_count: z.number().optional(),
+  total_launch_count: z.number().nullable().optional(),
   map_image: z.string().nullable().optional(),
   url: z.string().optional()
 });
@@ -27,10 +27,10 @@ export const ll2PadListSchema = paginatedEnvelope(ll2PadSchema);
 export const ll2LauncherConfigSchema = z.object({
   id: z.number(),
   name: z.string(),
-  family: z.string().optional(),
-  full_name: z.string().optional(),
-  variant: z.string().optional(),
-  description: z.string().optional()
+  family: z.string().nullable().optional(),
+  full_name: z.string().nullable().optional(),
+  variant: z.string().nullable().optional(),
+  description: z.string().nullable().optional()
 });
 export type Ll2LauncherConfig = z.infer<typeof ll2LauncherConfigSchema>;
 
@@ -44,11 +44,11 @@ export const ll2LauncherSchema = z.object({
   details: z.string().nullable().optional(),
   launcher_config: ll2LauncherConfigSchema.nullable().optional(),
   image_url: z.string().nullable().optional(),
-  flights: z.number().optional(),
+  flights: z.number().nullable().optional(),
   last_launch_date: z.string().nullable().optional(),
   first_launch_date: z.string().nullable().optional(),
-  attempted_landings: z.number().optional(),
-  successful_landings: z.number().optional()
+  attempted_landings: z.number().nullable().optional(),
+  successful_landings: z.number().nullable().optional()
 });
 export type Ll2Launcher = z.infer<typeof ll2LauncherSchema>;
 export const ll2LauncherListSchema = paginatedEnvelope(ll2LauncherSchema);
@@ -58,8 +58,8 @@ export const ll2LandingLocationSchema = z.object({
   id: z.number(),
   name: z.string(),
   abbrev: z.string().optional(),
-  description: z.string().optional(),
-  location: z.object({ name: z.string().optional() }).optional(),
+  description: z.string().nullable().optional(),
+  location: z.object({ name: z.string().optional() }).nullable().optional(),
   successful_landings: z.union([z.number(), z.string()]).optional(),
   attempted_landings: z.union([z.number(), z.string()]).optional()
 });
@@ -79,7 +79,7 @@ export type Ll2Landing = z.infer<typeof ll2LandingSchema>;
 export const ll2LauncherStageSchema = z.object({
   id: z.number().optional(),
   type: z.string().optional(), // 'core', 'side', or omitted on Falcon 9
-  reused: z.boolean().optional(),
+  reused: z.boolean().nullable().optional(),
   launcher_flight_number: z.number().nullable().optional(),
   launcher: ll2LauncherSchema.partial().extend({ id: z.number(), serial_number: z.string() }),
   landing: ll2LandingSchema.nullable().optional()
