@@ -5,6 +5,7 @@ import { ll2LaunchListSchema, type Ll2Launch } from '../ll2/schemas';
 import { launch, launchBooster, landingLocation } from '../db/schema';
 import { upsertMany } from './upsert';
 import { slugify } from './launchpads';
+import { getRawSqlite } from '../db/client';
 
 function deriveSlug(l: Ll2Launch): string {
 	if (l.slug) return l.slug;
@@ -108,6 +109,27 @@ export async function syncLaunches(
 
 		url = parsed.next ?? null;
 	}
+}
+
+export function recomputeBoosterLandingCounts(_db: BetterSQLite3Database<any>) {
+	// Aggregate per-flight landings into the booster row counters.
+	// Run after syncLaunches has updated launch_booster.
+	const sqlite = getRawSqlite();
+	const sql = [
+		'UPDATE booster',
+		'SET',
+		'  attempted_landings = COALESCE((',
+		'    SELECT COUNT(*) FROM launch_booster',
+		'    WHERE launch_booster.booster_id = booster.id',
+		'      AND launch_booster.landing_attempted = 1',
+		'  ), 0),',
+		'  successful_landings = COALESCE((',
+		'    SELECT COUNT(*) FROM launch_booster',
+		'    WHERE launch_booster.booster_id = booster.id',
+		'      AND launch_booster.landing_success = 1',
+		'  ), 0)'
+	].join('\n');
+	sqlite.prepare(sql).run();
 }
 
 export const __statusTokenForTest = statusToken;
