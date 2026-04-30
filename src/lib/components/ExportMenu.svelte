@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { m } from '$lib/i18n/runtime';
+	let { apiBase = '/api/boosters/export' }: { apiBase?: string } = $props();
 
 	let open = $state(false);
-
 	let v = $derived(page.url.searchParams.get('v') ?? '');
-	let csvHref: string = $derived(
-		`/api/boosters/export?format=csv${v ? `&v=${encodeURIComponent(v)}` : ''}`
-	);
-	let jsonHref: string = $derived(
-		`/api/boosters/export?format=json${v ? `&v=${encodeURIComponent(v)}` : ''}`
-	);
+	let csvHref = $derived(`${apiBase}?format=csv${v ? `&v=${encodeURIComponent(v)}` : ''}`);
+	let jsonHref = $derived(`${apiBase}?format=json${v ? `&v=${encodeURIComponent(v)}` : ''}`);
 </script>
 
 <div class="menu">

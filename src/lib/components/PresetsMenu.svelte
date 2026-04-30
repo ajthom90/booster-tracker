@@ -6,7 +6,15 @@
 	import { page } from '$app/state';
 	import { m } from '$lib/i18n/runtime';
 
-	const STORAGE_KEY = 'boosterTracker.presets.boosters';
+	let {
+		storageKey = 'boosters',
+		basePath = '/boosters'
+	}: {
+		storageKey?: string;
+		basePath?: string;
+	} = $props();
+
+	let STORAGE_KEY = $derived(`boosterTracker.presets.${storageKey}`);
 
 	type Preset = { name: string; v: string };
 	let presets: Preset[] = $state([]);
@@ -34,8 +42,10 @@
 
 	function load(p: Preset) {
 		open = false;
-		const target = `${resolve('/boosters')}?v=${encodeURIComponent(p.v)}` as ResolvedPathname;
-		goto(target);
+		// Cast required because resolve() is overload-typed with literal route strings.
+		const resolveAny = resolve as (path: string) => string;
+		const dest = (resolveAny(basePath) + `?v=${encodeURIComponent(p.v)}`) as ResolvedPathname;
+		goto(dest);
 	}
 
 	function remove(name: string) {

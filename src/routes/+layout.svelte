@@ -6,8 +6,10 @@
 	let { children } = $props();
 
 	const boostersHref = resolve('/boosters');
+	const launchesHref = resolve('/launches');
 	const homeHref = resolve('/');
 	let onBoosters = $derived(page.url.pathname.startsWith('/boosters'));
+	let onLaunches = $derived(page.url.pathname.startsWith('/launches'));
 </script>
 
 <div class="app-shell">
@@ -19,6 +21,7 @@
 			</a>
 			<nav class="site-nav">
 				<a href={boostersHref} class="nav-link" class:active={onBoosters}>{m.nav_boosters()}</a>
+				<a href={launchesHref} class="nav-link" class:active={onLaunches}>{m.nav_launches()}</a>
 			</nav>
 		</div>
 	</header>
