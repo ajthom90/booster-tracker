@@ -3,7 +3,11 @@ import type { AppDb } from '../db/types';
 import type { Ll2Client } from '../ll2/client';
 import { syncLaunchpads } from './launchpads';
 import { syncBoosters } from './boosters';
-import { syncLaunches, recomputeBoosterLandingCounts } from './launches';
+import {
+	syncLaunches,
+	recomputeBoosterLandingCounts,
+	recomputeLandingLocationCounts
+} from './launches';
 import { syncState } from '../db/schema';
 
 type ResourceName = 'launchpads' | 'boosters' | 'launches';
@@ -55,6 +59,7 @@ export async function fullSync(db: AppDb, client: Ll2Client) {
 	await runResource(db, 'launches', () => syncLaunches(db, client), true);
 	// Recompute again so newly-synced launch_booster rows are reflected.
 	recomputeBoosterLandingCounts();
+	recomputeLandingLocationCounts();
 }
 
 export async function incrementalSync(db: AppDb, client: Ll2Client) {
@@ -64,4 +69,5 @@ export async function incrementalSync(db: AppDb, client: Ll2Client) {
 	recomputeBoosterLandingCounts();
 	await runResource(db, 'launches', () => syncLaunches(db, client), false);
 	recomputeBoosterLandingCounts();
+	recomputeLandingLocationCounts();
 }

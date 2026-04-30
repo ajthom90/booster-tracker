@@ -145,4 +145,26 @@ export function recomputeBoosterLandingCounts() {
 	sqlite.prepare(sql).run();
 }
 
+export function recomputeLandingLocationCounts() {
+	// Aggregate per-flight landings into the landing_location row counters.
+	// LL2's location object only sometimes returns these fields, so we derive
+	// from launch_booster (the per-flight landing data we always have).
+	const sqlite = getRawSqlite();
+	const sql = [
+		'UPDATE landing_location',
+		'SET',
+		'  attempted_landings = COALESCE((',
+		'    SELECT COUNT(*) FROM launch_booster',
+		'    WHERE launch_booster.landing_location_id = landing_location.id',
+		'      AND launch_booster.landing_attempted = 1',
+		'  ), 0),',
+		'  successful_landings = COALESCE((',
+		'    SELECT COUNT(*) FROM launch_booster',
+		'    WHERE launch_booster.landing_location_id = landing_location.id',
+		'      AND launch_booster.landing_success = 1',
+		'  ), 0)'
+	].join('\n');
+	sqlite.prepare(sql).run();
+}
+
 export const __statusTokenForTest = statusToken;

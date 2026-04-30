@@ -73,6 +73,24 @@
 		return `/locations/${slug}` as ResolvedPathname;
 	}
 
+	function locTypeKey(locationType: string | null | undefined): string {
+		const t = (locationType ?? '').toLowerCase();
+		if (t.includes('drone ship') || t === 'asds') return 'asds';
+		if (t.includes('return to launch') || t === 'rtls') return 'rtls';
+		if (t === 'ocean' || t.includes('ocean')) return 'ocean';
+		if (t === 'expended') return 'expended';
+		return 'unknown';
+	}
+
+	function locTypeShortLabel(locationType: string | null | undefined): string {
+		const t = (locationType ?? '').toLowerCase();
+		if (t.includes('drone ship') || t === 'asds') return 'ASDS';
+		if (t.includes('return to launch') || t === 'rtls') return 'RTLS';
+		if (t === 'ocean' || t.includes('ocean')) return 'Ocean';
+		if (t === 'expended') return 'Expended';
+		return locationType ?? '—';
+	}
+
 	let totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 </script>
 
@@ -144,8 +162,8 @@
 							{#if col.id === 'name'}
 								<a class="location-link" href={locationHref(row.slug)}>{row.name}</a>
 							{:else if col.id === 'location_type'}
-								<span class="loc-type loc-type-{(row.locationType ?? 'unknown').toLowerCase()}"
-									>{row.locationType}</span
+								<span class="loc-type loc-type-{locTypeKey(row.locationType)}"
+									>{locTypeShortLabel(row.locationType)}</span
 								>
 							{:else}
 								{cellValue(row, col.id)}
@@ -324,6 +342,12 @@
 		background: #f1f5f9;
 		color: #475569;
 		border-color: #e2e8f0;
+	}
+
+	.loc-type-expended {
+		background: #fee2e2;
+		color: #991b1b;
+		border-color: #fecaca;
 	}
 
 	.loc-type-unknown {
