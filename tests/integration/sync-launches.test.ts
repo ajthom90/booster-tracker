@@ -4,12 +4,7 @@ import { makeTestDb } from './_db';
 import { syncLaunches } from '../../src/lib/server/sync/launches';
 import { syncBoosters } from '../../src/lib/server/sync/boosters';
 import { syncLaunchpads } from '../../src/lib/server/sync/launchpads';
-import {
-	launch,
-	launchBooster,
-	landingLocation,
-	booster
-} from '../../src/lib/server/db/schema';
+import { launch, launchBooster, landingLocation, booster } from '../../src/lib/server/db/schema';
 import { Ll2Client } from '../../src/lib/server/ll2/client';
 import { TokenBucket } from '../../src/lib/server/ll2/ratelimit';
 import { eq } from 'drizzle-orm';
@@ -99,10 +94,6 @@ describe('syncLaunches', () => {
 		// Landing locations were upserted from nested data
 		const locs = await db.select().from(landingLocation);
 		const locNames = locs.map((l) => l.name).sort();
-		expect(locNames).toEqual([
-			'Landing Zone 1',
-			'Landing Zone 2',
-			'Of Course I Still Love You'
-		]);
+		expect(locNames).toEqual(['Landing Zone 1', 'Landing Zone 2', 'Of Course I Still Love You']);
 	});
 });
