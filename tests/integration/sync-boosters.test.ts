@@ -5,7 +5,6 @@ import { syncBoosters } from '../../src/lib/server/sync/boosters';
 import { booster, launcherConfig } from '../../src/lib/server/db/schema';
 import { Ll2Client } from '../../src/lib/server/ll2/client';
 import { TokenBucket } from '../../src/lib/server/ll2/ratelimit';
-import { eq } from 'drizzle-orm';
 
 describe('syncBoosters', () => {
 	it('upserts boosters and their launcher_configs', async () => {
@@ -20,7 +19,7 @@ describe('syncBoosters', () => {
 
 		const client = new Ll2Client({
 			baseUrl: 'https://example/2.2.0',
-			fetch: fetchMock as any,
+			fetch: fetchMock as unknown as typeof globalThis.fetch,
 			bucket: new TokenBucket({ capacity: 5, refillPerHour: 60 })
 		});
 

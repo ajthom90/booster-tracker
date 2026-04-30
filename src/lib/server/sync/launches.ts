@@ -1,6 +1,6 @@
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { inArray } from 'drizzle-orm';
 import type { Ll2Client } from '../ll2/client';
+import type { AppDb } from '../db/types';
 import { ll2LaunchListSchema, type Ll2Launch } from '../ll2/schemas';
 import { launch, launchBooster, landingLocation } from '../db/schema';
 import { upsertMany } from './upsert';
@@ -24,10 +24,7 @@ function statusToken(name: string): string {
 	return 'unknown';
 }
 
-export async function syncLaunches(
-	db: BetterSQLite3Database<Record<string, unknown>>,
-	client: Ll2Client
-) {
+export async function syncLaunches(db: AppDb, client: Ll2Client) {
 	let url: string | null = '/launch/?lsp__name=SpaceX&limit=50&mode=detailed';
 	while (url) {
 		const raw = await client.getJson<unknown>(url);
@@ -111,7 +108,7 @@ export async function syncLaunches(
 	}
 }
 
-export function recomputeBoosterLandingCounts(_db: BetterSQLite3Database<any>) {
+export function recomputeBoosterLandingCounts() {
 	// Aggregate per-flight landings into the booster row counters.
 	// Run after syncLaunches has updated launch_booster.
 	const sqlite = getRawSqlite();

@@ -19,7 +19,7 @@ describe('syncLaunchpads', () => {
 
 		const client = new Ll2Client({
 			baseUrl: 'https://example/2.2.0',
-			fetch: fetchMock as any,
+			fetch: fetchMock as unknown as typeof globalThis.fetch,
 			bucket: new TokenBucket({ capacity: 5, refillPerHour: 60 })
 		});
 

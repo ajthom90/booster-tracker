@@ -1,4 +1,4 @@
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import type { AppDb } from '../db/types';
 import type { FilterClause } from '../../url-state';
 import { runBoostersQuery } from './query';
 
@@ -12,7 +12,7 @@ export type BoosterAggregates = {
 };
 
 export async function computeBoosterAggregates(
-	db: BetterSQLite3Database<any>,
+	db: AppDb,
 	filters: FilterClause[]
 ): Promise<BoosterAggregates> {
 	// Pull the filtered set lightly. For Phase 1 the booster table is small

@@ -1,5 +1,5 @@
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { eq } from 'drizzle-orm';
+import type { AppDb } from '../db/types';
 import type { Ll2Client } from '../ll2/client';
 import { syncLaunchpads } from './launchpads';
 import { syncBoosters } from './boosters';
@@ -9,7 +9,7 @@ import { syncState } from '../db/schema';
 type ResourceName = 'launchpads' | 'boosters' | 'launches';
 
 async function setStatus(
-	db: BetterSQLite3Database<any>,
+	db: AppDb,
 	resource: ResourceName,
 	patch: Partial<typeof syncState.$inferInsert>
 ) {
@@ -22,7 +22,7 @@ async function setStatus(
 }
 
 async function runResource(
-	db: BetterSQLite3Database<any>,
+	db: AppDb,
 	resource: ResourceName,
 	fn: () => Promise<void>,
 	fullSync: boolean
@@ -44,20 +44,20 @@ async function runResource(
 	}
 }
 
-export async function fullSync(db: BetterSQLite3Database<any>, client: Ll2Client) {
+export async function fullSync(db: AppDb, client: Ll2Client) {
 	// Order matters: pads/boosters before launches because launches reference both.
 	await runResource(db, 'launchpads', () => syncLaunchpads(db, client), true);
 	await runResource(db, 'boosters', () => syncBoosters(db, client), true);
 	await runResource(db, 'launches', () => syncLaunches(db, client), true);
 	// LL2's /launcher/ endpoint doesn't return landing counts, so derive them
 	// from the per-flight launch_booster rows we just upserted.
-	recomputeBoosterLandingCounts(db);
+	recomputeBoosterLandingCounts();
 }
 
-export async function incrementalSync(db: BetterSQLite3Database<any>, client: Ll2Client) {
+export async function incrementalSync(db: AppDb, client: Ll2Client) {
 	// For Phase 1 incremental == refresh upcoming + last 30 days of launches,
 	// and re-fetch boosters (their flight counts change after each launch).
 	await runResource(db, 'boosters', () => syncBoosters(db, client), false);
 	await runResource(db, 'launches', () => syncLaunches(db, client), false);
-	recomputeBoosterLandingCounts(db);
+	recomputeBoosterLandingCounts();
 }

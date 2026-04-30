@@ -8,7 +8,7 @@ function csvEscape(s: unknown): string {
 	return str;
 }
 
-const FIELD_FOR_COL: Record<string, (_b: Booster) => unknown> = {
+const FIELD_FOR_COL: Record<string, (b: Booster) => unknown> = {
 	serial_number: (b) => b.serialNumber,
 	status: (b) => b.status,
 	flights: (b) => b.flights,
@@ -20,7 +20,7 @@ const FIELD_FOR_COL: Record<string, (_b: Booster) => unknown> = {
 		b.lastLaunchDate
 			? Math.floor((Date.now() - new Date(b.lastLaunchDate).getTime()) / 86_400_000)
 			: null,
-	block: (_b: Booster): unknown => null // requires launcher_config join — left blank in Phase 1
+	block: () => null // requires launcher_config join — left blank in Phase 1
 };
 
 export function boostersToCsv(rows: Booster[], visibleCols: string[]): string {
