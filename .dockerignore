@@ -1,0 +1,16 @@
+node_modules
+build
+.svelte-kit
+data
+.git
+.github
+docs
+tests
+.superpowers
+.playwright-mcp
+tmp
+.env
+.env.local
+*.log
+playwright-report
+test-results

@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: ghcr.io/ajthom90/booster-tracker:latest
+    container_name: booster-tracker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_PATH: /data/data.db
+      PORT: 3000
+    volumes:
+      - ./data:/data
+    ports:
+      - "3000:3000"
