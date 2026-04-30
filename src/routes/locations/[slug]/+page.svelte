@@ -37,11 +37,13 @@
 
 	function attemptResultClass(a: (typeof data.attempts)[number]): string {
 		if (a.landingAttempted == null || a.landingAttempted === false) return 'res-none';
+		if (a.landingSuccess == null) return 'res-pending';
 		return a.landingSuccess ? 'res-ok' : 'res-fail';
 	}
 	function attemptResultLabel(a: (typeof data.attempts)[number]): string {
 		if (a.landingAttempted == null) return '—';
 		if (a.landingAttempted === false) return 'Not attempted';
+		if (a.landingSuccess == null) return 'Pending';
 		return a.landingSuccess ? 'Landed' : 'Failed';
 	}
 </script>
@@ -285,6 +287,10 @@
 	.res-fail {
 		background: #fecaca;
 		color: #991b1b;
+	}
+	.res-pending {
+		background: #dbeafe;
+		color: #1e40af;
 	}
 	.res-none {
 		background: var(--surface);
