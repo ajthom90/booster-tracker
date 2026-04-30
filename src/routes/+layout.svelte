@@ -12,12 +12,17 @@
 		'/boosters',
 		'/droneships'
 	) as ResolvedPathname;
+	const launchpadsHref = resolve('/boosters').replace(
+		'/boosters',
+		'/launchpads'
+	) as ResolvedPathname;
 	const homeHref = resolve('/');
 	let onBoosters = $derived(page.url.pathname.startsWith('/boosters'));
 	let onLaunches = $derived(page.url.pathname.startsWith('/launches'));
 	let onDroneships = $derived(
 		page.url.pathname.startsWith('/droneships') || page.url.pathname.startsWith('/locations')
 	);
+	let onLaunchpads = $derived(page.url.pathname.startsWith('/launchpads'));
 </script>
 
 <div class="app-shell">
@@ -32,6 +37,9 @@
 				<a href={launchesHref} class="nav-link" class:active={onLaunches}>{m.nav_launches()}</a>
 				<a href={droneShipsHref} class="nav-link" class:active={onDroneships}
 					>{m.nav_droneships()}</a
+				>
+				<a href={launchpadsHref} class="nav-link" class:active={onLaunchpads}
+					>{m.nav_launchpads()}</a
 				>
 			</nav>
 		</div>
