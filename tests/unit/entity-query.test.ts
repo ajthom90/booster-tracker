@@ -118,4 +118,57 @@ describe('runEntityQuery', () => {
 		expect(r.total).toBe(1);
 		expect((r.rows[0] as { name: string }).name).toBe('beta');
 	});
+
+	it('filters with the in operator', async () => {
+		const db = makeDb();
+		const r = await runEntityQuery(db as never, config, {
+			filters: [{ id: 'count', op: 'in', value: [5, 20] }],
+			sort: [],
+			page: 0,
+			pageSize: 50
+		});
+		expect(r.total).toBe(2);
+		expect(
+			r.rows.map((row) => (row as { name: string }).name).sort()
+		).toEqual(['beta', 'gamma']);
+	});
+
+	it('filters with the between operator', async () => {
+		const db = makeDb();
+		const r = await runEntityQuery(db as never, config, {
+			filters: [{ id: 'count', op: 'between', value: [8, 15] }],
+			sort: [],
+			page: 0,
+			pageSize: 50
+		});
+		expect(r.total).toBe(1);
+		expect((r.rows[0] as { name: string }).name).toBe('alpha');
+	});
+
+	it('treats unsupported computed-column ops as no-op (filter ignored)', async () => {
+		const db = makeDb();
+		const computedConfig: EntityConfig<typeof widget> = {
+			table: widget,
+			columnMap: {
+				...config.columnMap,
+				count_doubled: {
+					kind: 'computed',
+					toSql: (clause) => {
+						if (clause.op === 'gte') return sql`(${widget.count} * 2) >= ${clause.value}`;
+						return null; // unsupported ops -> null
+					},
+					orderBy: sql`(${widget.count} * 2) DESC`
+				}
+			},
+			defaultSort: [desc(widget.id)]
+		};
+		// Use an op the computed column doesn't handle (contains). Result should be unfiltered.
+		const r = await runEntityQuery(db as never, computedConfig, {
+			filters: [{ id: 'count_doubled', op: 'contains', value: 'foo' }],
+			sort: [],
+			page: 0,
+			pageSize: 50
+		});
+		expect(r.total).toBe(3); // all rows pass through; filter was a no-op
+	});
 });
