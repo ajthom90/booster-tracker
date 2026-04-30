@@ -13,13 +13,29 @@ function deriveSlug(l: Ll2Launch): string {
 	return slugify(base) || l.id;
 }
 
-function statusToken(name: string): string {
-	// Map LL2's display status to our enum tokens.
+function statusToken(name: string, abbrev?: string | null): string {
+	// Map LL2's display status (and short abbreviation) to our enum tokens.
+	const abv = (abbrev ?? '').toLowerCase().trim();
+	if (abv) {
+		if (abv === 'success') return 'success';
+		if (abv === 'partial failure') return 'partial_failure';
+		if (abv === 'failure') return 'failure';
+		if (abv === 'go' || abv === 'tbd' || abv === 'tbc' || abv === 'hold') return 'upcoming';
+		if (abv === 'in flight') return 'in_flight';
+	}
 	const lower = name.toLowerCase();
 	if (lower.includes('success')) return 'success';
 	if (lower.includes('partial')) return 'partial_failure';
 	if (lower.includes('failure')) return 'failure';
-	if (lower.includes('go') || lower.includes('tbd')) return 'upcoming';
+	if (
+		lower.includes('go for launch') ||
+		lower.includes('to be determined') ||
+		lower.includes('to be confirmed') ||
+		lower.includes('hold') ||
+		lower.includes('tbd') ||
+		lower.includes('tbc')
+	)
+		return 'upcoming';
 	if (lower.includes('flight')) return 'in_flight';
 	return 'unknown';
 }
@@ -60,7 +76,7 @@ export async function syncLaunches(db: AppDb, client: Ll2Client) {
 			id: l.id,
 			slug: deriveSlug(l),
 			name: l.name,
-			status: statusToken(l.status.name),
+			status: statusToken(l.status.name, l.status.abbrev ?? null),
 			net: l.net,
 			windowStart: l.window_start ?? null,
 			windowEnd: l.window_end ?? null,
