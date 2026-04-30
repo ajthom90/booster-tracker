@@ -45,15 +45,17 @@
 </script>
 
 <div class="menu">
-	<button onclick={save}>{m.btn_save_view()}</button>
+	<button class="menu-btn" onclick={save}>{m.btn_save_view()}</button>
 	{#if presets.length > 0}
-		<button onclick={() => (open = !open)}>Views ({presets.length})</button>
+		<button class="menu-btn" onclick={() => (open = !open)}
+			>{m.btn_views()} ({presets.length}) ▾</button
+		>
 		{#if open}
 			<ul>
 				{#each presets as p (p.name)}
 					<li>
 						<button class="link" onclick={() => load(p)}>{p.name}</button>
-						<button class="x" onclick={() => remove(p.name)}>×</button>
+						<button class="x" onclick={() => remove(p.name)} aria-label="remove">×</button>
 					</li>
 				{/each}
 			</ul>
@@ -65,50 +67,83 @@
 	.menu {
 		position: relative;
 		display: inline-flex;
-		gap: 0.5rem;
+		gap: var(--space-2);
 	}
 
 	ul {
 		position: absolute;
-		inset-block-start: 100%;
+		inset-block-start: calc(100% + 4px);
 		inset-inline-end: 0;
-		background: white;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
+		background: var(--surface);
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
 		list-style: none;
-		padding: 0.5rem;
-		min-width: 12rem;
+		padding: 6px;
+		min-inline-size: 13rem;
+		box-shadow: var(--shadow-md);
+		margin: 0;
+		z-index: 10;
 	}
 
 	li {
 		display: flex;
 		justify-content: space-between;
-		gap: 0.5rem;
+		gap: var(--space-2);
+		align-items: center;
 	}
 
-	button {
+	.menu-btn {
 		font: inherit;
 		cursor: pointer;
-		padding: 0.25rem 0.5rem;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
-		background: white;
+		padding-block: 6px;
+		padding-inline: 12px;
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		color: var(--text);
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition:
+			background-color 120ms ease,
+			border-color 120ms ease;
+	}
+
+	.menu-btn:hover {
+		background: var(--accent-soft);
+		border-color: var(--accent);
+		color: var(--accent-strong);
 	}
 
 	button.link {
+		font: inherit;
 		border: 0;
 		background: transparent;
-		padding: 0.25rem;
+		padding-block: 6px;
+		padding-inline: 8px;
 		flex: 1;
 		text-align: start;
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+		font-size: 0.9rem;
+		color: var(--text);
 	}
 
 	button.link:hover {
-		background: #f1f5f9;
+		background: var(--accent-soft);
+		color: var(--accent-strong);
 	}
 
 	button.x {
+		font: inherit;
 		border: 0;
 		background: transparent;
+		cursor: pointer;
+		color: var(--text-soft);
+		font-size: 1.05rem;
+		padding: 0 6px;
+	}
+
+	button.x:hover {
+		color: var(--accent-strong);
 	}
 </style>

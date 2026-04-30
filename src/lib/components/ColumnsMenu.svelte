@@ -20,7 +20,7 @@
 </script>
 
 <div class="menu">
-	<button onclick={() => (open = !open)}>{m.btn_columns()}</button>
+	<button class="menu-btn" onclick={() => (open = !open)}>{m.btn_columns()} ▾</button>
 	{#if open}
 		<ul>
 			{#each columns as col (col.id)}
@@ -47,34 +47,58 @@
 
 	ul {
 		position: absolute;
-		inset-block-start: 100%;
+		inset-block-start: calc(100% + 4px);
 		inset-inline-end: 0;
-		background: white;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
+		background: var(--surface);
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
 		list-style: none;
-		padding: 0.5rem;
-		min-width: 12rem;
-		box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+		padding: 6px;
+		min-inline-size: 13rem;
+		box-shadow: var(--shadow-md);
+		margin: 0;
+		z-index: 10;
 	}
 
 	li {
-		padding: 0.125rem 0;
+		padding: 0;
 	}
 
 	label {
 		display: flex;
-		gap: 0.5rem;
+		gap: 8px;
 		align-items: center;
 		cursor: pointer;
+		padding-block: 5px;
+		padding-inline: 8px;
+		border-radius: var(--radius-sm);
+		font-size: 0.9rem;
 	}
 
-	button {
+	label:hover {
+		background: var(--accent-soft);
+		color: var(--accent-strong);
+	}
+
+	.menu-btn {
 		font: inherit;
 		cursor: pointer;
-		padding: 0.25rem 0.75rem;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
-		background: white;
+		padding-block: 6px;
+		padding-inline: 12px;
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		color: var(--text);
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition:
+			background-color 120ms ease,
+			border-color 120ms ease;
+	}
+
+	.menu-btn:hover {
+		background: var(--accent-soft);
+		border-color: var(--accent);
+		color: var(--accent-strong);
 	}
 </style>

@@ -14,7 +14,7 @@
 </script>
 
 <div class="menu">
-	<button onclick={() => (open = !open)}>Export ▾</button>
+	<button class="menu-btn" onclick={() => (open = !open)}>{m.btn_export()} ▾</button>
 	{#if open}
 		<ul>
 			<li><a href={csvHref} rel="external">{m.btn_export_csv()}</a></li>
@@ -31,33 +31,58 @@
 
 	ul {
 		position: absolute;
-		inset-block-start: 100%;
+		inset-block-start: calc(100% + 4px);
 		inset-inline-end: 0;
-		background: white;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
+		background: var(--surface);
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
 		list-style: none;
-		padding: 0.5rem;
-		min-width: 8rem;
+		padding: 6px;
+		min-inline-size: 9rem;
+		box-shadow: var(--shadow-md);
+		margin: 0;
+		z-index: 10;
+	}
+
+	li {
+		padding: 0;
 	}
 
 	li a {
 		display: block;
-		padding: 0.25rem 0.5rem;
-		color: inherit;
+		padding-block: 6px;
+		padding-inline: 8px;
+		color: var(--text);
 		text-decoration: none;
+		border-radius: var(--radius-sm);
+		font-size: 0.9rem;
 	}
 
 	li a:hover {
-		background: #f1f5f9;
+		background: var(--accent-soft);
+		color: var(--accent-strong);
+		text-decoration: none;
 	}
 
-	button {
+	.menu-btn {
 		font: inherit;
 		cursor: pointer;
-		padding: 0.25rem 0.75rem;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
-		background: white;
+		padding-block: 6px;
+		padding-inline: 12px;
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		color: var(--text);
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition:
+			background-color 120ms ease,
+			border-color 120ms ease;
+	}
+
+	.menu-btn:hover {
+		background: var(--accent-soft);
+		border-color: var(--accent);
+		color: var(--accent-strong);
 	}
 </style>

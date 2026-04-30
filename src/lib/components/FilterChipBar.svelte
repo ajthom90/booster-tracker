@@ -65,6 +65,7 @@
 			<span class="chip-label">{describeColumn(filter.id)}</span>
 			{#if col?.filter?.kind === 'enum'}
 				<select
+					class="chip-input"
 					value={Array.isArray(filter.value) ? filter.value[0] : filter.value}
 					onchange={(e) => updateAt(i, { value: [(e.currentTarget as HTMLSelectElement).value] })}
 				>
@@ -74,6 +75,7 @@
 				</select>
 			{:else if col?.filter?.kind === 'numberRange'}
 				<select
+					class="chip-input chip-op"
 					value={filter.op}
 					onchange={(e) => updateAt(i, { op: (e.currentTarget as HTMLSelectElement).value })}
 				>
@@ -82,6 +84,7 @@
 					<option value="lte">≤</option>
 				</select>
 				<input
+					class="chip-input chip-num"
 					type="number"
 					value={filter.value as number}
 					oninput={(e) =>
@@ -89,6 +92,7 @@
 				/>
 			{:else if col?.filter?.kind === 'text'}
 				<input
+					class="chip-input"
 					type="text"
 					value={filter.value as string}
 					placeholder={m.filter_placeholder_search()}
@@ -96,16 +100,17 @@
 				/>
 			{:else if col?.filter?.kind === 'dateRange'}
 				<input
+					class="chip-input"
 					type="date"
 					value={filter.value as string}
 					oninput={(e) => updateAt(i, { value: (e.currentTarget as HTMLInputElement).value })}
 				/>
 			{/if}
-			<button class="x" onclick={() => removeAt(i)} aria-label="remove">×</button>
+			<button class="chip-x" onclick={() => removeAt(i)} aria-label="remove">×</button>
 		</span>
 	{/each}
 
-	<button class="add" onclick={() => (pickerOpen = !pickerOpen)}>{m.btn_add_filter()}</button>
+	<button class="add" onclick={() => (pickerOpen = !pickerOpen)}>+ {m.btn_add_filter()}</button>
 	{#if pickerOpen}
 		<div class="picker">
 			{#each columns.filter((c) => !!c.filter && !filters.some((f) => f.id === c.id)) as col (col.id)}
@@ -123,76 +128,130 @@
 	.chips {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: var(--space-2);
 		align-items: center;
-		padding-block: 0.5rem;
+		padding-block: var(--space-3);
+		position: relative;
 	}
 
 	.chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.25rem;
-		background: #f1f5f9;
-		border: 1px solid #cbd5e1;
+		gap: 6px;
+		background: var(--surface);
+		border: 1px solid var(--border-strong);
 		border-radius: 999px;
-		padding-inline: 0.5rem;
-		padding-block: 0.25rem;
-		font-size: 0.875rem;
+		padding-inline: 10px;
+		padding-block: 4px;
+		font-size: 0.85rem;
+		box-shadow: var(--shadow-sm);
+		transition: border-color 120ms ease;
+	}
+
+	.chip:hover {
+		border-color: var(--accent);
 	}
 
 	.chip-label {
-		font-weight: 500;
+		font-weight: 600;
+		color: var(--text);
 	}
 
-	.chip select,
-	.chip input {
+	.chip-input {
 		font: inherit;
-		padding: 0.125rem 0.25rem;
+		font-size: 0.85rem;
+		padding-block: 2px;
+		padding-inline: 6px;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: var(--surface-muted);
+		color: var(--text);
 	}
 
-	.x,
+	.chip-input:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-color: var(--accent);
+	}
+
+	.chip-num {
+		inline-size: 6em;
+	}
+
+	.chip-x,
 	.add,
 	.clear {
 		font-family: inherit;
 		cursor: pointer;
 	}
 
-	.x {
+	.chip-x {
 		background: transparent;
 		border: 0;
-		font-size: 1rem;
+		font-size: 1.05rem;
 		line-height: 1;
+		color: var(--text-soft);
+		padding: 0 2px;
+		border-radius: 999px;
+	}
+
+	.chip-x:hover {
+		color: var(--accent-strong);
 	}
 
 	.add,
 	.clear {
-		background: white;
-		border: 1px solid #cbd5e1;
-		padding-block: 0.25rem;
-		padding-inline: 0.75rem;
+		background: var(--surface);
+		border: 1px solid var(--border-strong);
+		padding-block: 5px;
+		padding-inline: 12px;
 		border-radius: 999px;
-		font-size: 0.875rem;
+		font-size: 0.85rem;
+		color: var(--text);
+		font-weight: 500;
+		transition:
+			background-color 120ms ease,
+			border-color 120ms ease,
+			color 120ms ease;
+	}
+
+	.add:hover,
+	.clear:hover {
+		background: var(--accent-soft);
+		border-color: var(--accent);
+		color: var(--accent-strong);
 	}
 
 	.picker {
+		position: absolute;
+		inset-block-start: 100%;
+		inset-inline-start: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
-		padding: 0.5rem;
-		border: 1px solid #cbd5e1;
-		border-radius: 0.5rem;
-		background: white;
+		gap: 2px;
+		padding: 6px;
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-md);
+		background: var(--surface);
+		box-shadow: var(--shadow-md);
+		z-index: 10;
+		min-inline-size: 12rem;
 	}
 
 	.picker button {
 		background: transparent;
 		border: 0;
 		text-align: start;
-		padding: 0.25rem;
+		padding-block: 6px;
+		padding-inline: 8px;
 		cursor: pointer;
+		border-radius: var(--radius-sm);
+		font-size: 0.9rem;
+		color: var(--text);
 	}
 
 	.picker button:hover {
-		background: #f1f5f9;
+		background: var(--accent-soft);
+		color: var(--accent-strong);
 	}
 </style>
