@@ -128,9 +128,7 @@ describe('runEntityQuery', () => {
 			pageSize: 50
 		});
 		expect(r.total).toBe(2);
-		expect(
-			r.rows.map((row) => (row as { name: string }).name).sort()
-		).toEqual(['beta', 'gamma']);
+		expect(r.rows.map((row) => (row as { name: string }).name).sort()).toEqual(['beta', 'gamma']);
 	});
 
 	it('filters with the between operator', async () => {

@@ -702,9 +702,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const stamp = new Date().toISOString().slice(0, 10);
 	const filename = `launches-${stamp}.${format}`;
 	const body =
-		format === 'csv'
-			? launchesToCsv(launches, visibleCols)
-			: launchesToJson(launches, visibleCols);
+		format === 'csv' ? launchesToCsv(launches, visibleCols) : launchesToJson(launches, visibleCols);
 
 	return new Response(body, {
 		headers: {
@@ -995,8 +993,7 @@ Replace `src/lib/components/PresetsMenu.svelte`:
 
 	function load(p: Preset) {
 		open = false;
-		const dest = (resolve(basePath as never) +
-			`?v=${encodeURIComponent(p.v)}`) as ResolvedPathname;
+		const dest = (resolve(basePath as never) + `?v=${encodeURIComponent(p.v)}`) as ResolvedPathname;
 		goto(dest);
 	}
 
@@ -1120,10 +1117,13 @@ Aggregate tiles for launches:
 ```ts
 [
 	{ label: m.agg_showing(), value: data.aggregates.count, denom: data.total },
-	{ label: m.agg_launches_success_rate(), value: `${(data.aggregates.successRate * 100).toFixed(1)}%` },
+	{
+		label: m.agg_launches_success_rate(),
+		value: `${(data.aggregates.successRate * 100).toFixed(1)}%`
+	},
 	{ label: m.agg_launches_upcoming(), value: data.aggregates.upcomingCount },
 	{ label: m.agg_launches_failures(), value: data.aggregates.failureCount }
-]
+];
 ```
 
 Copy the rest of the structure (page header, filter chip bar, table with sort headers, pager) from `src/routes/boosters/+page.svelte`. Key differences: link goes to `/launches/<slug>`, status badge is `LaunchStatusBadge`, the `mono` style for the link uses `font-family: var(--font-mono)` which is mostly used for booster serials — for launch names (longer text), drop the mono and just use `color: var(--accent)`.
@@ -1137,16 +1137,27 @@ Pass tiles array to the now-generic AggregateBar, and the `storageKey="boosters"
 	{ label: m.agg_showing(), value: data.aggregates.count, denom: data.total },
 	{ label: m.agg_avg_flights(), value: data.aggregates.avgFlights.toFixed(1) },
 	{ label: m.agg_total_landings(), value: data.aggregates.totalLandings },
-	{ label: m.agg_landing_success_rate(), value: `${(data.aggregates.successRate * 100).toFixed(1)}%` }
-]
+	{
+		label: m.agg_landing_success_rate(),
+		value: `${(data.aggregates.successRate * 100).toFixed(1)}%`
+	}
+];
 ```
 
 ### Step 7: Add Launches nav link in `+layout.svelte`
 
 ```svelte
 <nav class="site-nav">
-	<a href={resolve('/boosters')} class="nav-link" class:active={page.url.pathname.startsWith('/boosters')}>{m.nav_boosters()}</a>
-	<a href={resolve('/launches')} class="nav-link" class:active={page.url.pathname.startsWith('/launches')}>{m.nav_launches()}</a>
+	<a
+		href={resolve('/boosters')}
+		class="nav-link"
+		class:active={page.url.pathname.startsWith('/boosters')}>{m.nav_boosters()}</a
+	>
+	<a
+		href={resolve('/launches')}
+		class="nav-link"
+		class:active={page.url.pathname.startsWith('/launches')}>{m.nav_launches()}</a
+	>
 </nav>
 ```
 
@@ -1326,7 +1337,7 @@ Page lives at `src/routes/droneships/+page.svelte`. Structurally identical to la
 - Title/subtitle: `m.locations_page_title()` / `m.locations_page_subtitle()`
 - The "name" column links to `/locations/<slug>` (built in Task 10)
 - No status badge — use a small inline pill `<span class="loc-type loc-type-{row.location_type}">{row.location_type}</span>`. Provide three colors (asds = blue, rtls = orange, ocean = gray).
-- Aggregate tiles: `[{ label: m.agg_showing(), value: aggs.count, denom: data.total }, { label: m.agg_locations_total_attempts(), value: aggs.totalAttempted }, { label: m.agg_locations_success_rate(), value: \`${(aggs.successRate * 100).toFixed(1)}%\` }]` (3-up; the 4th tile is empty or omit it gracefully)
+- Aggregate tiles: `[{ label: m.agg_showing(), value: aggs.count, denom: data.total }, { label: m.agg_locations_total_attempts(), value: aggs.totalAttempted }, { label: m.agg_locations_success_rate(), value: \`${(aggs.successRate \* 100).toFixed(1)}%\` }]` (3-up; the 4th tile is empty or omit it gracefully)
 - ExportMenu: `apiBase="/api/droneships/export"`. PresetsMenu: `storageKey="droneships"` `basePath="/droneships"`.
 
 Add nav link in `+layout.svelte`:
@@ -1526,8 +1537,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		<div class="label">Mission</div>
 		<div class="value">{l.missionName ?? '—'}</div>
 	</div>
-	<div class="meta-tile"><div class="label">Type</div><div class="value">{l.missionType ?? '—'}</div></div>
-	<div class="meta-tile"><div class="label">Orbit</div><div class="value">{l.orbit ?? '—'}</div></div>
+	<div class="meta-tile">
+		<div class="label">Type</div>
+		<div class="value">{l.missionType ?? '—'}</div>
+	</div>
+	<div class="meta-tile">
+		<div class="label">Orbit</div>
+		<div class="value">{l.orbit ?? '—'}</div>
+	</div>
 	{#if data.pad}<div class="meta-tile">
 			<div class="label">Pad</div>
 			<div class="value">{data.pad.name}</div>
@@ -1964,7 +1981,7 @@ export async function flightCountHistogram(db: AppDb): Promise<FlightCountHistog
 }
 ```
 
-If Drizzle's `db.all<T>(sql\`...\`)` typing rejects the explicit row type, fall back to `getRawSqlite().prepare(sqlText).all() as Array<{ monthEnd: string; rate: number | null }>` — same runtime behavior, simpler typing. Either is fine.
+If Drizzle's `db.all<T>(sql\`...\`)`typing rejects the explicit row type, fall back to`getRawSqlite().prepare(sqlText).all() as Array<{ monthEnd: string; rate: number | null }>` — same runtime behavior, simpler typing. Either is fine.
 
 ### Tests — `tests/integration/stats-queries.test.ts`
 
@@ -2210,16 +2227,20 @@ npm install chart.js
 </header>
 
 <section class="glance-grid">
-	<div class="tile"><div class="label">Total boosters</div>
+	<div class="tile">
+		<div class="label">Total boosters</div>
 		<div class="value">{formatNumber(data.glance.totalBoosters)}</div>
 	</div>
-	<div class="tile"><div class="label">Active</div>
+	<div class="tile">
+		<div class="label">Active</div>
 		<div class="value">{formatNumber(data.glance.activeBoosters)}</div>
 	</div>
-	<div class="tile"><div class="label">Total launches</div>
+	<div class="tile">
+		<div class="label">Total launches</div>
 		<div class="value">{formatNumber(data.glance.totalLaunches)}</div>
 	</div>
-	<div class="tile"><div class="label">Landing success rate</div>
+	<div class="tile">
+		<div class="label">Landing success rate</div>
 		<div class="value">{(data.glance.landingSuccessRate * 100).toFixed(1)}%</div>
 	</div>
 </section>
@@ -2237,37 +2258,77 @@ npm install chart.js
 		{#if data.records.mostFlownBooster}
 			<li>
 				Most-flown booster:
-				<a class="mono" href={boosterHref(data.records.mostFlownBooster.serial)}>{data.records.mostFlownBooster.serial}</a>
+				<a class="mono" href={boosterHref(data.records.mostFlownBooster.serial)}
+					>{data.records.mostFlownBooster.serial}</a
+				>
 				— {data.records.mostFlownBooster.flights} flights
 			</li>
 		{/if}
 		{#if data.records.mostUsedLaunchpad}
-			<li>Most-used launchpad: {data.records.mostUsedLaunchpad.name} — {data.records.mostUsedLaunchpad.total} launches</li>
+			<li>
+				Most-used launchpad: {data.records.mostUsedLaunchpad.name} — {data.records.mostUsedLaunchpad
+					.total} launches
+			</li>
 		{/if}
 		{#if data.records.mostUsedDroneship}
-			<li>Most-used droneship: {data.records.mostUsedDroneship.name} — {data.records.mostUsedDroneship.successes} successful landings</li>
+			<li>
+				Most-used droneship: {data.records.mostUsedDroneship.name} — {data.records.mostUsedDroneship
+					.successes} successful landings
+			</li>
 		{/if}
 	</ul>
 </section>
 
 <style>
-	.page-header { padding-block-end: var(--space-3); }
-	.subtitle { color: var(--text-muted); margin-block-start: 0.25rem; }
-	.glance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-block: var(--space-4); }
-	.charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+	.page-header {
+		padding-block-end: var(--space-3);
+	}
+	.subtitle {
+		color: var(--text-muted);
+		margin-block-start: 0.25rem;
+	}
+	.glance-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-3);
+		margin-block: var(--space-4);
+	}
+	.charts-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-3);
+	}
 	.tile {
 		background: var(--surface-elevated);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		padding: var(--space-3);
 	}
-	.label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-	.value { font-size: 1.5rem; font-weight: 700; margin-block-start: 0.25rem; }
-	.records { padding-block-start: var(--space-5); }
-	.mono { font-family: var(--font-mono); color: var(--accent); }
+	.label {
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--text-muted);
+	}
+	.value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-block-start: 0.25rem;
+	}
+	.records {
+		padding-block-start: var(--space-5);
+	}
+	.mono {
+		font-family: var(--font-mono);
+		color: var(--accent);
+	}
 	@media (width <= 640px) {
-		.glance-grid { grid-template-columns: repeat(2, 1fr); }
-		.charts-grid { grid-template-columns: 1fr; }
+		.glance-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.charts-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
 ```
@@ -2275,10 +2336,8 @@ npm install chart.js
 ### Step 4: Add Stats nav link in `+layout.svelte`
 
 ```svelte
-<a
-	href={resolve('/stats')}
-	class="nav-link"
-	class:active={page.url.pathname.startsWith('/stats')}>Stats</a
+<a href={resolve('/stats')} class="nav-link" class:active={page.url.pathname.startsWith('/stats')}
+	>Stats</a
 >
 ```
 
@@ -2658,7 +2717,7 @@ services:
 
 Add a "Skip the initial seed" sub-section:
 
-```markdown
+````markdown
 ### Skip the initial seed (recommended)
 
 A pre-seeded SQLite database is published weekly to GitHub Releases.
@@ -2669,7 +2728,9 @@ mkdir -p data
 curl -L "https://github.com/ajthom90/booster-tracker/releases/latest/download/data.db" -o data/data.db
 docker compose up -d
 ```
-```
+````
+
+````
 
 (Render the inner triple-backticks with proper escaping when writing the file.)
 
@@ -2678,7 +2739,7 @@ docker compose up -d
 ```bash
 git add docker-compose.yml README.md
 git commit -m "Pull docker-compose image from GHCR; document seeded DB snapshots"
-```
+````
 
 ---
 

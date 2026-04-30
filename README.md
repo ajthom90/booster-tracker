@@ -33,17 +33,17 @@ npm run dev            # start dev server at http://localhost:5173
 
 Useful scripts:
 
-| Script | What it does |
-|---|---|
-| `npm run dev` | Vite dev server, hot reload |
-| `npm run build` | Production build (Node adapter, output in `build/`) |
-| `npm run preview` | Run the production build locally |
-| `npm run check` | Svelte / TypeScript checks |
-| `npm run lint` | Prettier + ESLint + Stylelint |
-| `npm run format` | Auto-format with Prettier |
-| `npm test` | Vitest unit + integration |
-| `npm run test:e2e` | Playwright e2e |
-| `npm run seed` | Full sync from LL2 (one-time, ~minutes) |
+| Script             | What it does                                        |
+| ------------------ | --------------------------------------------------- |
+| `npm run dev`      | Vite dev server, hot reload                         |
+| `npm run build`    | Production build (Node adapter, output in `build/`) |
+| `npm run preview`  | Run the production build locally                    |
+| `npm run check`    | Svelte / TypeScript checks                          |
+| `npm run lint`     | Prettier + ESLint + Stylelint                       |
+| `npm run format`   | Auto-format with Prettier                           |
+| `npm test`         | Vitest unit + integration                           |
+| `npm run test:e2e` | Playwright e2e                                      |
+| `npm run seed`     | Full sync from LL2 (one-time, ~minutes)             |
 
 ## Self-hosting (Docker)
 
