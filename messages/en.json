@@ -53,7 +53,8 @@
 	"detail_landing_not_attempted": "Not attempted",
 	"detail_landing_failed": "Failed",
 	"detail_landing_ok": "OK",
-	"footer_data_source": "Data from The Space Devs Launch Library 2 API",
+	"footer_data_source_prefix": "Data from",
+	"footer_data_source_link_text": "The Space Devs Launch Library 2 API",
 	"footer_repo": "GitHub",
 	"footer_built_with": "Built with SvelteKit"
 }

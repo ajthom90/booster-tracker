@@ -48,9 +48,12 @@ export async function fullSync(db: AppDb, client: Ll2Client) {
 	// Order matters: pads/boosters before launches because launches reference both.
 	await runResource(db, 'launchpads', () => syncLaunchpads(db, client), true);
 	await runResource(db, 'boosters', () => syncBoosters(db, client), true);
+	// LL2's /launcher/ endpoint doesn't return landing counts; restore them
+	// from existing launch_booster rows immediately so the UI is never blank
+	// during the (potentially slow) launches sync that follows.
+	recomputeBoosterLandingCounts();
 	await runResource(db, 'launches', () => syncLaunches(db, client), true);
-	// LL2's /launcher/ endpoint doesn't return landing counts, so derive them
-	// from the per-flight launch_booster rows we just upserted.
+	// Recompute again so newly-synced launch_booster rows are reflected.
 	recomputeBoosterLandingCounts();
 }
 
@@ -58,6 +61,7 @@ export async function incrementalSync(db: AppDb, client: Ll2Client) {
 	// For Phase 1 incremental == refresh upcoming + last 30 days of launches,
 	// and re-fetch boosters (their flight counts change after each launch).
 	await runResource(db, 'boosters', () => syncBoosters(db, client), false);
+	recomputeBoosterLandingCounts();
 	await runResource(db, 'launches', () => syncLaunches(db, client), false);
 	recomputeBoosterLandingCounts();
 }

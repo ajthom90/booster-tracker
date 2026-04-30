@@ -30,8 +30,10 @@
 	<footer class="site-footer">
 		<div class="site-footer-inner">
 			<span class="footer-item">
-				{m.footer_data_source()}
-				<a href="https://thespacedevs.com/llapi" rel="external noopener" target="_blank">LL2</a>
+				{m.footer_data_source_prefix()}
+				<a href="https://thespacedevs.com/llapi" rel="external noopener" target="_blank"
+					>{m.footer_data_source_link_text()}</a
+				>
 			</span>
 			<span class="footer-sep" aria-hidden="true">·</span>
 			<a
