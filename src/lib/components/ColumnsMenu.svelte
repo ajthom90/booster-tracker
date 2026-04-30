@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '$lib/i18n/runtime';
+	import { m, resolveLabel } from '$lib/i18n/runtime';
 	import type { ColumnDef } from '$lib/server/boosters/columns';
 	let {
 		columns,
@@ -31,7 +31,7 @@
 							checked={visible.includes(col.id)}
 							onchange={() => toggle(col.id)}
 						/>
-						{col.label}
+						{resolveLabel(col.label)}
 					</label>
 				</li>
 			{/each}

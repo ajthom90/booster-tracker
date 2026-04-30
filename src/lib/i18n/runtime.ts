@@ -18,3 +18,8 @@ export function formatDaysSince(iso: string | null, locale: string = baseLocale,
   const days = Math.max(0, Math.floor((now.getTime() - new Date(iso).getTime()) / 86_400_000));
   return new Intl.NumberFormat(locale).format(days);
 }
+
+export function resolveLabel(key: string): string {
+  const fn = (m as unknown as Record<string, () => string>)[key];
+  return typeof fn === 'function' ? fn() : key;
+}

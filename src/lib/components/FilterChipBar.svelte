@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '$lib/i18n/runtime';
+	import { m, resolveLabel } from '$lib/i18n/runtime';
 	import type { FilterClause } from '$lib/url-state';
 	import type { ColumnDef } from '$lib/server/boosters/columns';
 
@@ -53,7 +53,8 @@
 
 	function describeColumn(id: string) {
 		const col = columns.find((c) => c.id === id);
-		return col?.label ?? id;
+		const label = col?.label ?? id;
+		return resolveLabel(label);
 	}
 </script>
 
@@ -108,7 +109,7 @@
 	{#if pickerOpen}
 		<div class="picker">
 			{#each columns.filter((c) => !!c.filter && !filters.some((f) => f.id === c.id)) as col (col.id)}
-				<button onclick={() => addFilter(col)}>{col.label}</button>
+				<button onclick={() => addFilter(col)}>{resolveLabel(col.label)}</button>
 			{/each}
 		</div>
 	{/if}

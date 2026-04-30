@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { m, formatDate, formatDaysSince } from '$lib/i18n/runtime';
+	import { m, formatDate, formatDaysSince, resolveLabel } from '$lib/i18n/runtime';
 	import { encodeViewState, type FilterClause, type SortClause } from '$lib/url-state';
 	import AggregateBar from '$lib/components/AggregateBar.svelte';
 	import FilterChipBar from '$lib/components/FilterChipBar.svelte';
@@ -108,7 +108,7 @@
 			{#each data.columns.filter((c) => visible.has(c.id)) as col (col.id)}
 				{@const sortInfo = data.sort.find((s) => s.id === col.id)}
 				<th onclick={(e) => toggleSort(col.id, e)}>
-					{col.label}
+					{resolveLabel(col.label)}
 					{#if sortInfo}{sortInfo.desc ? '↓' : '↑'}{/if}
 				</th>
 			{/each}
