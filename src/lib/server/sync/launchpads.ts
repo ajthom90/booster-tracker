@@ -3,6 +3,7 @@ import type { Ll2Client } from '../ll2/client';
 import { ll2PadListSchema } from '../ll2/schemas';
 import { launchpad } from '../db/schema';
 import { upsertMany } from './upsert';
+import { getRawSqlite } from '../db/client';
 
 export function slugify(text: string): string {
 	return text
@@ -35,4 +36,35 @@ export async function syncLaunchpads(
 		await upsertMany(db, launchpad, rows, 'id');
 		url = parsed.next ?? null;
 	}
+}
+
+export function recomputeLaunchpadStats() {
+	// LL2 returns all-provider data on /pad/, even with the SpaceX filter.
+	// Recompute total_launches from our own launch table (SpaceX-only) and
+	// drop pads that have zero SpaceX launches.
+	const sqlite = getRawSqlite();
+
+	// 1. Recompute total_launches per pad from our launch table.
+	sqlite
+		.prepare(
+			[
+				'UPDATE launchpad',
+				'SET total_launches = (',
+				'  SELECT COUNT(*) FROM launch WHERE launch.launchpad_id = launchpad.id',
+				')'
+			].join('\n')
+		)
+		.run();
+
+	// 2. Delete pads that no SpaceX launch references.
+	sqlite
+		.prepare(
+			[
+				'DELETE FROM launchpad',
+				'WHERE id NOT IN (',
+				'  SELECT DISTINCT launchpad_id FROM launch WHERE launchpad_id IS NOT NULL',
+				')'
+			].join('\n')
+		)
+		.run();
 }

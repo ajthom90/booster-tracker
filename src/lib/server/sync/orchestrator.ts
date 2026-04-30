@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import type { AppDb } from '../db/types';
 import type { Ll2Client } from '../ll2/client';
-import { syncLaunchpads } from './launchpads';
+import { syncLaunchpads, recomputeLaunchpadStats } from './launchpads';
 import { syncBoosters } from './boosters';
 import {
 	syncLaunches,
@@ -60,6 +60,7 @@ export async function fullSync(db: AppDb, client: Ll2Client) {
 	// Recompute again so newly-synced launch_booster rows are reflected.
 	recomputeBoosterLandingCounts();
 	recomputeLandingLocationCounts();
+	recomputeLaunchpadStats();
 }
 
 export async function incrementalSync(db: AppDb, client: Ll2Client) {
@@ -70,4 +71,5 @@ export async function incrementalSync(db: AppDb, client: Ll2Client) {
 	await runResource(db, 'launches', () => syncLaunches(db, client), false);
 	recomputeBoosterLandingCounts();
 	recomputeLandingLocationCounts();
+	recomputeLaunchpadStats();
 }
