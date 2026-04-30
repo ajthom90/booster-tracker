@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { ResolvedPathname } from '$app/types';
 	import '../app.css';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -7,9 +8,16 @@
 
 	const boostersHref = resolve('/boosters');
 	const launchesHref = resolve('/launches');
+	const droneShipsHref = resolve('/boosters').replace(
+		'/boosters',
+		'/droneships'
+	) as ResolvedPathname;
 	const homeHref = resolve('/');
 	let onBoosters = $derived(page.url.pathname.startsWith('/boosters'));
 	let onLaunches = $derived(page.url.pathname.startsWith('/launches'));
+	let onDroneships = $derived(
+		page.url.pathname.startsWith('/droneships') || page.url.pathname.startsWith('/locations')
+	);
 </script>
 
 <div class="app-shell">
@@ -22,6 +30,9 @@
 			<nav class="site-nav">
 				<a href={boostersHref} class="nav-link" class:active={onBoosters}>{m.nav_boosters()}</a>
 				<a href={launchesHref} class="nav-link" class:active={onLaunches}>{m.nav_launches()}</a>
+				<a href={droneShipsHref} class="nav-link" class:active={onDroneships}
+					>{m.nav_droneships()}</a
+				>
 			</nav>
 		</div>
 	</header>
