@@ -50,6 +50,7 @@
 		"@inlang/paraglide-js": "^2.17.0",
 		"@tanstack/table-core": "^8.21.3",
 		"better-sqlite3": "^12.9.0",
+		"chart.js": "^4.5.1",
 		"dotenv": "^17.4.2",
 		"drizzle-orm": "^0.45.2",
 		"node-cron": "^4.2.1",

@@ -16,6 +16,7 @@
 		'/boosters',
 		'/launchpads'
 	) as ResolvedPathname;
+	const statsHref = resolve('/stats');
 	const homeHref = resolve('/');
 	let onBoosters = $derived(page.url.pathname.startsWith('/boosters'));
 	let onLaunches = $derived(page.url.pathname.startsWith('/launches'));
@@ -23,6 +24,7 @@
 		page.url.pathname.startsWith('/droneships') || page.url.pathname.startsWith('/locations')
 	);
 	let onLaunchpads = $derived(page.url.pathname.startsWith('/launchpads'));
+	let onStats = $derived(page.url.pathname.startsWith('/stats'));
 </script>
 
 <div class="app-shell">
@@ -41,6 +43,7 @@
 				<a href={launchpadsHref} class="nav-link" class:active={onLaunchpads}
 					>{m.nav_launchpads()}</a
 				>
+				<a href={statsHref} class="nav-link" class:active={onStats}>Stats</a>
 			</nav>
 		</div>
 	</header>
