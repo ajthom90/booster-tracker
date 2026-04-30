@@ -8,9 +8,8 @@
 	let { data }: { data: PageData } = $props();
 	let pad = $derived(data.pad);
 	let counts = $derived(data.counts);
-	let successRate = $derived(
-		counts.total === 0 ? 0 : (counts.successes ?? 0) / counts.total
-	);
+	let decided = $derived((counts.successes ?? 0) + (counts.failures ?? 0));
+	let successRate = $derived(decided === 0 ? 0 : (counts.successes ?? 0) / decided);
 
 	function launchHref(slug: string): ResolvedPathname {
 		return (resolve('/launches') + '/' + slug) as ResolvedPathname;

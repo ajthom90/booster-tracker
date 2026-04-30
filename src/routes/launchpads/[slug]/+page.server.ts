@@ -24,14 +24,22 @@ export const load: PageServerLoad = async ({ params }) => {
 		.orderBy(desc(launch.net))
 		.limit(50);
 
-	// Counts (total + successes only — we'll compute the rate in the page).
+	// Counts: total includes upcoming, but successRate is computed only over
+	// decided launches (success + failure), matching the launches page aggregate
+	// bar convention.
 	const counts = await db
 		.select({
 			total: sql<number>`count(*)`,
-			successes: sql<number>`sum(CASE WHEN ${launch.status} = 'success' THEN 1 ELSE 0 END)`
+			successes: sql<number>`sum(CASE WHEN ${launch.status} = 'success' THEN 1 ELSE 0 END)`,
+			failures: sql<number>`sum(CASE WHEN ${launch.status} IN ('failure', 'partial_failure') THEN 1 ELSE 0 END)`,
+			upcoming: sql<number>`sum(CASE WHEN ${launch.status} = 'upcoming' THEN 1 ELSE 0 END)`
 		})
 		.from(launch)
 		.where(eq(launch.launchpadId, pad.id));
 
-	return { pad, launches, counts: counts[0] ?? { total: 0, successes: 0 } };
+	return {
+		pad,
+		launches,
+		counts: counts[0] ?? { total: 0, successes: 0, failures: 0, upcoming: 0 }
+	};
 };
