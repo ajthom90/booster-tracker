@@ -94,5 +94,7 @@
 	"footer_data_source_prefix": "Data from",
 	"footer_data_source_link_text": "The Space Devs Launch Library 2 API",
 	"footer_repo": "GitHub",
-	"footer_built_with": "Built with SvelteKit"
+	"footer_built_with": "Built with SvelteKit",
+	"mt_banner_text": "תרגומים אלה הופקו אוטומטית.",
+	"mt_banner_cta": "עזרו לשפרם"
 }

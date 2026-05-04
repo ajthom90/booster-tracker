@@ -5,6 +5,7 @@
 	import { m, localizedPath } from '$lib/i18n/runtime';
 	import { stripLocalePrefix } from '$lib/i18n/locale-detect';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import LocaleBanner from '$lib/components/LocaleBanner.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children, data }: { children?: Snippet; data: { locale: string } } = $props();
@@ -27,6 +28,7 @@
 </script>
 
 <div class="app-shell">
+	<LocaleBanner locale={data.locale} />
 	<header class="site-header">
 		<div class="site-header-inner">
 			<a href={homeHref} class="brand">
