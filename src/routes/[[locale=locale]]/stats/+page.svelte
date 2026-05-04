@@ -125,67 +125,70 @@
 	}
 </script>
 
-<svelte:head><title>Stats · {m.site_title()}</title></svelte:head>
+<svelte:head><title>{m.stats_page_title()} · {m.site_title()}</title></svelte:head>
 
 <header class="page-header">
-	<h1>Stats</h1>
-	<p class="subtitle">Fleet-wide aggregates and trends.</p>
+	<h1>{m.stats_page_title()}</h1>
+	<p class="subtitle">{m.stats_subtitle()}</p>
 </header>
 
 <section class="glance-grid">
 	<div class="tile">
-		<div class="label">Total boosters</div>
+		<div class="label">{m.stats_glance_total_boosters()}</div>
 		<div class="value">{formatNumber(data.glance.totalBoosters)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Active</div>
+		<div class="label">{m.stats_glance_active()}</div>
 		<div class="value">{formatNumber(data.glance.activeBoosters)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Total launches</div>
+		<div class="label">{m.stats_glance_total_launches()}</div>
 		<div class="value">{formatNumber(data.glance.totalLaunches)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Landing success rate</div>
+		<div class="label">{m.stats_glance_landing_rate()}</div>
 		<div class="value">{(data.glance.landingSuccessRate * 100).toFixed(1)}%</div>
 	</div>
 </section>
 
 <section class="charts-grid">
-	<ChartCard title="Launches per year" config={launchesPerYearConfig} />
-	<ChartCard title="Launches per month (last 24)" config={perMonthConfig} />
-	<ChartCard title="Rolling 12-month landing success rate" config={rollingConfig} />
-	<ChartCard title="Booster flight-count distribution" config={histogramConfig} />
+	<ChartCard title={m.stats_chart_per_year()} config={launchesPerYearConfig} />
+	<ChartCard title={m.stats_chart_per_month()} config={perMonthConfig} />
+	<ChartCard title={m.stats_chart_rolling()} config={rollingConfig} />
+	<ChartCard title={m.stats_chart_histogram()} config={histogramConfig} />
 </section>
 
 <section class="records-section">
-	<h2>Records</h2>
+	<h2>{m.stats_section_records()}</h2>
 	<ul class="records">
 		{#if data.records.mostFlownBooster}
 			<li>
-				<span class="record-label">Most-flown booster</span>
+				<span class="record-label">{m.stats_record_most_flown()}</span>
 				<span class="record-value">
 					<a class="mono" href={boosterHref(data.records.mostFlownBooster.serial)}>
 						{data.records.mostFlownBooster.serial}
 					</a>
-					— {data.records.mostFlownBooster.flights} flights
+					— {m.stats_record_flights_suffix({ n: data.records.mostFlownBooster.flights })}
 				</span>
 			</li>
 		{/if}
 		{#if data.records.mostUsedLaunchpad}
 			<li>
-				<span class="record-label">Most-used launchpad</span>
+				<span class="record-label">{m.stats_record_most_pad()}</span>
 				<span class="record-value">
-					{data.records.mostUsedLaunchpad.name} — {data.records.mostUsedLaunchpad.total} launches
+					{data.records.mostUsedLaunchpad.name} — {m.stats_record_launches_suffix({
+						n: data.records.mostUsedLaunchpad.total
+					})}
 				</span>
 			</li>
 		{/if}
 		{#if data.records.mostUsedDroneship}
 			<li>
-				<span class="record-label">Most-used droneship</span>
+				<span class="record-label">{m.stats_record_most_ship()}</span>
 				<span class="record-value">
-					{data.records.mostUsedDroneship.name} — {data.records.mostUsedDroneship.successes} successful
-					landings
+					{data.records.mostUsedDroneship.name} — {m.stats_record_successful_landings_suffix({
+						n: data.records.mostUsedDroneship.successes
+					})}
 				</span>
 			</li>
 		{/if}

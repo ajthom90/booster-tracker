@@ -34,31 +34,31 @@
 
 <section class="stats-grid">
 	<div class="stat-tile">
-		<div class="stat-label">Total launches</div>
+		<div class="stat-label">{m.launchpad_stat_total_launches()}</div>
 		<div class="stat-value">{formatNumber(counts.total ?? 0)}</div>
 	</div>
 	<div class="stat-tile">
-		<div class="stat-label">Successes</div>
+		<div class="stat-label">{m.launchpad_stat_successes()}</div>
 		<div class="stat-value">{formatNumber(counts.successes ?? 0)}</div>
 	</div>
 	<div class="stat-tile">
-		<div class="stat-label">Success rate</div>
+		<div class="stat-label">{m.launchpad_stat_success_rate()}</div>
 		<div class="stat-value">{(successRate * 100).toFixed(1)}%</div>
 	</div>
 </section>
 
 <section>
-	<h2>Recent launches</h2>
+	<h2>{m.launchpad_recent_launches()}</h2>
 	{#if data.launches.length === 0}
-		<p class="empty">No launches at this pad yet.</p>
+		<p class="empty">{m.launchpad_no_launches()}</p>
 	{:else}
 		<div class="table-wrap">
 			<table>
 				<thead>
 					<tr>
-						<th>Date</th>
-						<th>Mission</th>
-						<th>Status</th>
+						<th>{m.launchpad_col_date()}</th>
+						<th>{m.launchpad_col_mission()}</th>
+						<th>{m.launchpad_col_status()}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -74,7 +74,7 @@
 		</div>
 		{#if (counts.total ?? 0) > data.launches.length}
 			<p class="note">
-				Showing the {data.launches.length} most recent launches of {counts.total} total.
+				{m.launchpad_recent_note({ shown: data.launches.length, total: counts.total ?? 0 })}
 			</p>
 		{/if}
 	{/if}

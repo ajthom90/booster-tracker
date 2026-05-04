@@ -38,35 +38,35 @@
 	}
 </script>
 
-<svelte:head><title>Admin Status · {m.site_title()}</title></svelte:head>
+<svelte:head><title>{m.admin_status_title()} · {m.site_title()}</title></svelte:head>
 
 <header class="page-header">
-	<h1>Admin Status</h1>
-	<p class="subtitle">Per-resource sync state and manual sync trigger.</p>
+	<h1>{m.admin_status_title()}</h1>
+	<p class="subtitle">{m.admin_status_subtitle()}</p>
 </header>
 
 <section class="counts-grid">
 	<div class="tile">
-		<div class="label">Boosters</div>
+		<div class="label">{m.admin_count_boosters()}</div>
 		<div class="value">{formatNumber(data.counts.boosters)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Launches</div>
+		<div class="label">{m.admin_count_launches()}</div>
 		<div class="value">{formatNumber(data.counts.launches)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Launchpads</div>
+		<div class="label">{m.admin_count_launchpads()}</div>
 		<div class="value">{formatNumber(data.counts.launchpads)}</div>
 	</div>
 	<div class="tile">
-		<div class="label">Landing locations</div>
+		<div class="label">{m.admin_count_landing_locations()}</div>
 		<div class="value">{formatNumber(data.counts.landingLocations)}</div>
 	</div>
 </section>
 
 <section class="actions-row">
 	<button class="primary" onclick={triggerSync} disabled={triggering}>
-		{triggering ? 'Triggering...' : 'Trigger incremental sync'}
+		{triggering ? m.admin_triggering() : m.admin_trigger_sync()}
 	</button>
 	{#if triggerMessage}
 		<span class="trigger-msg">{triggerMessage}</span>
@@ -74,19 +74,19 @@
 </section>
 
 <section>
-	<h2>Sync state</h2>
+	<h2>{m.admin_sync_state()}</h2>
 	{#if data.states.length === 0}
-		<p class="empty">No sync state recorded yet.</p>
+		<p class="empty">{m.admin_no_state()}</p>
 	{:else}
 		<div class="table-wrap">
 			<table>
 				<thead>
 					<tr>
-						<th>Resource</th>
-						<th>Status</th>
-						<th>Last full sync</th>
-						<th>Last incremental sync</th>
-						<th>Error</th>
+						<th>{m.admin_th_resource()}</th>
+						<th>{m.admin_th_status()}</th>
+						<th>{m.admin_th_last_full()}</th>
+						<th>{m.admin_th_last_incremental()}</th>
+						<th>{m.admin_th_error()}</th>
 					</tr>
 				</thead>
 				<tbody>

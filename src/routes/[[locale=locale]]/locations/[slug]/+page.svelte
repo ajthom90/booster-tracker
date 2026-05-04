@@ -41,9 +41,9 @@
 	}
 	function attemptResultLabel(a: (typeof data.attempts)[number]): string {
 		if (a.landingAttempted == null) return '—';
-		if (a.landingAttempted === false) return 'Not attempted';
-		if (a.landingSuccess == null) return 'Pending';
-		return a.landingSuccess ? 'Landed' : 'Failed';
+		if (a.landingAttempted === false) return m.detail_landing_not_attempted();
+		if (a.landingSuccess == null) return m.detail_landing_pending();
+		return a.landingSuccess ? m.detail_landing_landed() : m.detail_landing_failed();
 	}
 </script>
 
@@ -66,32 +66,32 @@
 
 <section class="stats-grid">
 	<div class="stat-tile">
-		<div class="stat-label">Successful</div>
+		<div class="stat-label">{m.location_stat_successful()}</div>
 		<div class="stat-value">{formatNumber(successful)}</div>
 	</div>
 	<div class="stat-tile">
-		<div class="stat-label">Attempted</div>
+		<div class="stat-label">{m.location_stat_attempted()}</div>
 		<div class="stat-value">{formatNumber(attempted)}</div>
 	</div>
 	<div class="stat-tile">
-		<div class="stat-label">Success rate</div>
+		<div class="stat-label">{m.location_stat_success_rate()}</div>
 		<div class="stat-value">{(successRate * 100).toFixed(1)}%</div>
 	</div>
 </section>
 
 <section>
-	<h2>Attempts</h2>
+	<h2>{m.location_attempts_section()}</h2>
 	{#if data.attempts.length === 0}
-		<p class="empty">No landing attempts recorded at this location yet.</p>
+		<p class="empty">{m.location_no_attempts()}</p>
 	{:else}
 		<div class="table-wrap">
 			<table>
 				<thead>
 					<tr>
-						<th>Date</th>
-						<th>Mission</th>
-						<th>Booster</th>
-						<th>Result</th>
+						<th>{m.location_col_date()}</th>
+						<th>{m.location_col_mission()}</th>
+						<th>{m.location_col_booster()}</th>
+						<th>{m.location_col_result()}</th>
 					</tr>
 				</thead>
 				<tbody>

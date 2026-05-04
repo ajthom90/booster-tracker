@@ -24,9 +24,9 @@
 
 	function landingCellText(s: (typeof data.stages)[number]): string {
 		if (s.landingAttempted == null) return '—';
-		if (s.landingAttempted === false) return 'Not attempted';
-		if (s.landingSuccess) return s.locationAbbrev ?? s.locationName ?? 'OK';
-		return 'Failed';
+		if (s.landingAttempted === false) return m.detail_landing_not_attempted();
+		if (s.landingSuccess) return s.locationAbbrev ?? s.locationName ?? m.detail_landing_landed();
+		return m.detail_landing_failed();
 	}
 
 	function landingClass(s: (typeof data.stages)[number]): string {
@@ -64,34 +64,34 @@
 <section class="meta-grid">
 	{#if l.missionName}
 		<div class="meta-tile">
-			<div class="meta-label">Mission</div>
+			<div class="meta-label">{m.detail_meta_mission()}</div>
 			<div class="meta-value">{l.missionName}</div>
 		</div>
 	{/if}
 	{#if l.missionType}
 		<div class="meta-tile">
-			<div class="meta-label">Type</div>
+			<div class="meta-label">{m.detail_meta_type()}</div>
 			<div class="meta-value">{l.missionType}</div>
 		</div>
 	{/if}
 	{#if l.orbit}
 		<div class="meta-tile">
-			<div class="meta-label">Orbit</div>
+			<div class="meta-label">{m.detail_meta_orbit()}</div>
 			<div class="meta-value">{l.orbit}</div>
 		</div>
 	{/if}
 	{#if data.pad}
 		<div class="meta-tile">
-			<div class="meta-label">Pad</div>
+			<div class="meta-label">{m.detail_meta_pad()}</div>
 			<div class="meta-value">{data.pad.name}</div>
 		</div>
 	{/if}
 </section>
 
 <section>
-	<h2>Boosters</h2>
+	<h2>{m.detail_section_boosters()}</h2>
 	{#if data.stages.length === 0}
-		<p class="empty">No booster data available for this launch.</p>
+		<p class="empty">{m.detail_no_boosters()}</p>
 	{:else}
 		<div class="booster-grid">
 			{#each data.stages as s (s.boosterId + '-' + (s.role ?? ''))}
@@ -104,11 +104,11 @@
 					<div class="booster-card-body">
 						{#if s.configName}<div class="card-meta">{s.configName}</div>{/if}
 						<div class="card-row">
-							<span class="card-row-label">Flight #</span>
+							<span class="card-row-label">{m.detail_card_flight_number()}</span>
 							<span class="card-row-value">{s.flightNumber ?? '—'}</span>
 						</div>
 						<div class="card-row">
-							<span class="card-row-label">Landing</span>
+							<span class="card-row-label">{m.detail_card_landing()}</span>
 							<span class="card-row-value landing {landingClass(s)}">{landingCellText(s)}</span>
 						</div>
 					</div>
@@ -120,7 +120,7 @@
 
 {#if embedUrl}
 	<section>
-		<h2>Webcast</h2>
+		<h2>{m.detail_section_webcast()}</h2>
 		<div class="embed-wrap">
 			<iframe
 				src={embedUrl}
