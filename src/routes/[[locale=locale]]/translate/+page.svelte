@@ -48,7 +48,12 @@
 					<span class="muted">— {meta?.label ?? c.code}</span>
 				</span>
 				<span class="bar" aria-label="{c.percentage}% complete">
-					<span class="fill" style="--p: {c.percentage}%"></span>
+					<span
+						class="fill"
+						style="
+
+--p: {c.percentage}%"
+					></span>
 				</span>
 				<span class="counts">
 					{m.translate_completion_keys({ translated: c.translated, total: c.total })}
@@ -63,29 +68,35 @@
 	.page-header {
 		padding-block-end: var(--space-3);
 	}
+
 	.subtitle {
 		color: var(--text-muted);
 		margin-block-start: 0.25rem;
 	}
+
 	.intro p {
 		max-inline-size: 60ch;
 	}
+
 	.paths {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-3);
 		padding-block: var(--space-4);
 	}
+
 	.path-card {
 		background: var(--surface-elevated);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		padding: var(--space-4);
 	}
+
 	h2 {
 		font-size: 1rem;
 		margin-block: 0 var(--space-2);
 	}
+
 	.cta {
 		display: inline-block;
 		margin-block-start: var(--space-3);
@@ -93,9 +104,11 @@
 		text-decoration: none;
 		font-weight: 600;
 	}
+
 	.cta:hover {
 		text-decoration: underline;
 	}
+
 	.completion {
 		list-style: none;
 		padding: 0;
@@ -104,6 +117,7 @@
 		flex-direction: column;
 		gap: var(--space-2);
 	}
+
 	.completion li {
 		display: grid;
 		grid-template-columns: 12rem 1fr 12rem;
@@ -115,10 +129,12 @@
 		padding-block: var(--space-2);
 		padding-inline: var(--space-3);
 	}
+
 	.muted {
 		color: var(--text-muted);
 		font-weight: 400;
 	}
+
 	.bar {
 		display: block;
 		block-size: 8px;
@@ -126,26 +142,31 @@
 		border-radius: 4px;
 		overflow: hidden;
 	}
+
 	.fill {
 		display: block;
 		block-size: 100%;
 		inline-size: var(--p);
 		background: var(--accent);
 	}
+
 	.counts {
 		font-size: 0.85rem;
 		color: var(--text-muted);
 		text-align: end;
 		font-variant-numeric: tabular-nums;
 	}
+
 	@media (width <= 640px) {
 		.paths {
 			grid-template-columns: 1fr;
 		}
+
 		.completion li {
 			grid-template-columns: 1fr;
 			gap: var(--space-1);
 		}
+
 		.counts {
 			text-align: start;
 		}

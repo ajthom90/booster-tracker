@@ -101,6 +101,7 @@ Inline-English sweep: every `+page.svelte` and detail-page `+page.svelte` that c
 **Goal**: declare the 7 locales we support, plus per-locale display metadata (label, direction).
 
 **Files:**
+
 - Modify: `project.inlang/settings.json`
 - Create: `src/lib/i18n/locale-meta.ts`
 - Create: `tests/unit/locale-meta.test.ts`
@@ -227,6 +228,7 @@ git commit -m "Declare 7 locales (en/es/fr/de/ar/he/zh-Hans) with direction meta
 **Goal**: pure function that picks a locale from a URL pathname + `Accept-Language` header, falling back to `en`.
 
 **Files:**
+
 - Create: `src/lib/i18n/locale-detect.ts`
 - Create: `tests/unit/locale-detect.test.ts`
 
@@ -311,7 +313,8 @@ export function stripLocalePrefix(pathname: string): { locale: string; rest: str
 	for (const code of NON_BASE_LOCALES) {
 		const prefix = `/${code}`;
 		if (pathname === prefix) return { locale: code, rest: '/' };
-		if (pathname.startsWith(prefix + '/')) return { locale: code, rest: pathname.slice(prefix.length) };
+		if (pathname.startsWith(prefix + '/'))
+			return { locale: code, rest: pathname.slice(prefix.length) };
 	}
 	return { locale: 'en', rest: pathname };
 }
@@ -370,6 +373,7 @@ git commit -m "Add detectLocale helper (URL prefix > Accept-Language > en)"
 **Goal**: `hooks.server.ts` calls `detectLocale` per request, sets it on the runtime, and exposes it for SSR via `event.locals` and the HTML `lang`/`dir` attributes.
 
 **Files:**
+
 - Modify: `src/hooks.server.ts`
 - Modify: `src/app.html`
 - Modify: `src/app.d.ts`
@@ -381,7 +385,7 @@ git commit -m "Add detectLocale helper (URL prefix > Accept-Language > en)"
 Read current `src/app.html`. Find the opening `<html ...>` tag and replace it with:
 
 ```html
-<html %sveltekit.html.attributes%>
+<html %sveltekit.html.attributes%></html>
 ```
 
 That delegates the attributes to whatever the server `transformPageChunk` adds. Sample full file (your version may differ; preserve other tags):
@@ -448,10 +452,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	return resolve(event, {
 		transformPageChunk: ({ html }) => {
 			const dir = getLocaleDir(locale);
-			return html.replace(
-				'%sveltekit.html.attributes%',
-				`lang="${locale}" dir="${dir}"`
-			);
+			return html.replace('%sveltekit.html.attributes%', `lang="${locale}" dir="${dir}"`);
 		}
 	});
 };
@@ -516,6 +517,7 @@ git commit -m "Detect request locale; render <html lang dir> per request"
 **Goal**: SvelteKit needs to recognize `/de/...`, `/ar/...`, etc. as valid pages that render the same components as the unprefixed routes. Use SvelteKit's "optional parameters" pattern.
 
 **Files:**
+
 - Move: `src/routes/(app)/...` route group OR add `[[locale=locale]]/` matcher
 - Create: `src/params/locale.ts` (route param matcher)
 - Create: `src/routes/[[locale=locale]]/+layout.svelte` and route nesting
@@ -587,7 +589,7 @@ Add a helper to `src/lib/i18n/runtime.ts`:
 ```ts
 export function localizedPath(locale: string, path: string): string {
 	if (locale === 'en') return path;
-	if (path === '/' ) return `/${locale}`;
+	if (path === '/') return `/${locale}`;
 	return `/${locale}${path.startsWith('/') ? '' : '/'}${path}`;
 }
 ```
@@ -650,6 +652,7 @@ git commit -m "Add optional [[locale]] route group; localize internal links"
 **Goal**: one-shot script that reads `messages/en.json`, calls DeepL for each non-English locale, and writes `messages/<locale>.json`. Operator runs this manually with `DEEPL_AUTH_KEY=...` set; output is committed.
 
 **Files:**
+
 - Create: `scripts/seed-translations.ts`
 - Modify: `package.json` (add `seed:translations` script)
 
@@ -682,11 +685,7 @@ const TARGETS: Record<string, string> = {
 };
 const ENDPOINT = 'https://api-free.deepl.com/v2/translate';
 
-async function translateBatch(
-	authKey: string,
-	target: string,
-	texts: string[]
-): Promise<string[]> {
+async function translateBatch(authKey: string, target: string, texts: string[]): Promise<string[]> {
 	const params = new URLSearchParams();
 	params.set('source_lang', SOURCE_LOCALE);
 	params.set('target_lang', target);
@@ -794,6 +793,7 @@ The translation outputs are committed in Task 6.
 **Goal**: have `messages/{es,fr,de,ar,he,zh-Hans}.json` exist in the repo so Paraglide compiles cleanly and the locale switcher has something to switch to.
 
 **Files (one or both paths):**
+
 - If you ran Task 5: commit the 6 generated files.
 - If you didn't: write 6 placeholder files (each is a copy of `messages/en.json`) and commit.
 
@@ -842,6 +842,7 @@ Paraglide needs all locales declared in `project.inlang/settings.json` (Task 1 a
 **Goal**: visible dropdown/menu in the header that lets users switch locale. Clicking a language navigates to the same path under the new prefix.
 
 **Files:**
+
 - Create: `src/lib/components/LanguageSwitcher.svelte`
 - Modify: `src/routes/+layout.svelte` (insert switcher into header)
 
@@ -1010,6 +1011,7 @@ git commit -m "Add LanguageSwitcher in header (locale-aware navigation)"
 **Goal**: a thin top banner shown only on non-English locales that says the translation is machine-generated and links to `/translate`.
 
 **Files:**
+
 - Create: `src/lib/components/LocaleBanner.svelte`
 - Modify: `src/routes/+layout.svelte`
 - Modify: `messages/en.json` (and the 6 sibling files) — add `mt_banner_text` and `mt_banner_cta` keys
@@ -1137,6 +1139,7 @@ git commit -m "Add 'machine-translated' banner on non-English locales"
 **Goal**: every UI string visible to a user must come through `m.<key>()`. Phase 2 left some hardcoded English on detail pages and inside small inline labels.
 
 **Files:**
+
 - Modify: `src/routes/[[locale=locale]]/launches/[slug]/+page.svelte`
 - Modify: `src/routes/[[locale=locale]]/launchpads/[slug]/+page.svelte`
 - Modify: `src/routes/[[locale=locale]]/locations/[slug]/+page.svelte`
@@ -1262,6 +1265,7 @@ git commit -m "Sweep detail-page inline English into Paraglide keys"
 **Goal**: PRs that introduce new keys must include translations for ALL 7 locales (or the workflow fails). Lightweight script that diffs key sets across locale files.
 
 **Files:**
+
 - Create: `scripts/validate-locales.ts`
 - Create: `.github/workflows/i18n-validate.yml`
 - Modify: `package.json` (add `validate:locales` script)
@@ -1390,6 +1394,7 @@ git commit -m "Add i18n-validate.yml CI: enforce all locales have all keys"
 **Goal**: a public page at `/translate` (and `/de/translate`, etc.) that shows per-locale completion percentages and links to Inlang Fink and Crowdin.
 
 **Files:**
+
 - Create: `src/routes/[[locale=locale]]/translate/+page.server.ts`
 - Create: `src/routes/[[locale=locale]]/translate/+page.svelte`
 - Modify: `messages/*.json` (add page-specific keys)
@@ -1509,12 +1514,16 @@ export const load: PageServerLoad = () => {
 	<div class="path-card">
 		<h2>{m.translate_inlang_heading()}</h2>
 		<p>{m.translate_inlang_body()}</p>
-		<a class="cta" href={finkUrl} rel="external noopener" target="_blank">{m.translate_inlang_cta()} →</a>
+		<a class="cta" href={finkUrl} rel="external noopener" target="_blank"
+			>{m.translate_inlang_cta()} →</a
+		>
 	</div>
 	<div class="path-card">
 		<h2>{m.translate_crowdin_heading()}</h2>
 		<p>{m.translate_crowdin_body()}</p>
-		<a class="cta" href={crowdinUrl} rel="external noopener" target="_blank">{m.translate_crowdin_cta()} →</a>
+		<a class="cta" href={crowdinUrl} rel="external noopener" target="_blank"
+			>{m.translate_crowdin_cta()} →</a
+		>
 	</div>
 </section>
 
@@ -1541,9 +1550,16 @@ export const load: PageServerLoad = () => {
 </section>
 
 <style>
-	.page-header { padding-block-end: var(--space-3); }
-	.subtitle { color: var(--text-muted); margin-block-start: 0.25rem; }
-	.intro p { max-inline-size: 60ch; }
+	.page-header {
+		padding-block-end: var(--space-3);
+	}
+	.subtitle {
+		color: var(--text-muted);
+		margin-block-start: 0.25rem;
+	}
+	.intro p {
+		max-inline-size: 60ch;
+	}
 	.paths {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
@@ -1567,7 +1583,9 @@ export const load: PageServerLoad = () => {
 		text-decoration: none;
 		font-weight: 600;
 	}
-	.cta:hover { text-decoration: underline; }
+	.cta:hover {
+		text-decoration: underline;
+	}
 	.completion {
 		list-style: none;
 		padding: 0;
@@ -1587,7 +1605,10 @@ export const load: PageServerLoad = () => {
 		padding-block: var(--space-2);
 		padding-inline: var(--space-3);
 	}
-	.muted { color: var(--text-muted); font-weight: 400; }
+	.muted {
+		color: var(--text-muted);
+		font-weight: 400;
+	}
 	.bar {
 		display: block;
 		block-size: 8px;
@@ -1608,12 +1629,16 @@ export const load: PageServerLoad = () => {
 		font-variant-numeric: tabular-nums;
 	}
 	@media (width <= 640px) {
-		.paths { grid-template-columns: 1fr; }
+		.paths {
+			grid-template-columns: 1fr;
+		}
 		.completion li {
 			grid-template-columns: 1fr;
 			gap: var(--space-1);
 		}
-		.counts { text-align: start; }
+		.counts {
+			text-align: start;
+		}
 	}
 </style>
 ```
@@ -1645,6 +1670,7 @@ git commit -m "Add /translate page with completion bars and Fink/Crowdin links"
 **Goal**: scheduled GH Action that pulls translation updates from Crowdin and opens a PR with the diff. Reverse direction: pushes new English source strings up to Crowdin.
 
 **Files:**
+
 - Create: `crowdin.yml` (Crowdin's per-project source-map config)
 - Create: `.github/workflows/crowdin-sync.yml`
 
@@ -1672,7 +1698,7 @@ name: Crowdin Sync
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # daily at 06:00 UTC
+    - cron: '0 6 * * *' # daily at 06:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -1722,6 +1748,7 @@ git commit -m "Add Crowdin sync workflow (daily; opens PRs against main)"
 **Goal**: graduate from the existing 4-pattern restriction to a global ban on physical CSS properties.
 
 **Files:**
+
 - Modify: `.stylelintrc.json`
 
 ### Step 1: Update config

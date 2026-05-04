@@ -46,6 +46,7 @@
 		position: relative;
 		display: inline-block;
 	}
+
 	button {
 		font: inherit;
 		color: var(--header-text-muted);
@@ -59,10 +60,12 @@
 		gap: 6px;
 		cursor: pointer;
 	}
+
 	button:hover {
 		background: rgb(255 255 255 / 6%);
 		color: var(--header-text);
 	}
+
 	ul {
 		position: absolute;
 		inset-block-start: 100%;
@@ -77,9 +80,12 @@
 		margin-block-start: 4px;
 		z-index: 100;
 	}
+
 	li {
 		padding: 0;
 	}
+
+	/* stylelint-disable-next-line no-descending-specificity -- nested-button styles deliberately follow base button:hover */
 	li button {
 		inline-size: 100%;
 		text-align: start;
@@ -91,14 +97,17 @@
 		justify-content: space-between;
 		gap: var(--space-2);
 	}
+
 	li button:hover {
 		background: var(--surface);
 	}
+
 	li button.active {
 		background: var(--surface);
 		color: var(--accent);
 		font-weight: 600;
 	}
+
 	.muted {
 		color: var(--text-muted);
 		font-weight: 400;

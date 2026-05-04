@@ -14,11 +14,7 @@ const TARGETS: Record<string, string> = {
 };
 const ENDPOINT = 'https://api-free.deepl.com/v2/translate';
 
-async function translateBatch(
-	authKey: string,
-	target: string,
-	texts: string[]
-): Promise<string[]> {
+async function translateBatch(authKey: string, target: string, texts: string[]): Promise<string[]> {
 	const params = new URLSearchParams();
 	params.set('source_lang', SOURCE_LOCALE);
 	params.set('target_lang', target);

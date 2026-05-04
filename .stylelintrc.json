@@ -2,9 +2,18 @@
 	"extends": ["stylelint-config-standard"],
 	"rules": {
 		"property-disallowed-list": [
-			["/^margin-(left|right)$/", "/^padding-(left|right)$/", "/^border-(left|right)/"],
+			[
+				"/^margin-(left|right)$/",
+				"/^padding-(left|right)$/",
+				"/^border-(left|right)/",
+				"/^inset-(left|right)$/",
+				"left",
+				"right",
+				"float",
+				"clear"
+			],
 			{
-				"message": "Use logical properties (margin-inline-*, padding-inline-*, border-inline-*) instead."
+				"message": "Use logical properties (margin-inline-*, padding-inline-*, border-inline-*, inset-inline-*) instead. Avoid 'left'/'right'/'float'/'clear' which are not direction-agnostic."
 			}
 		],
 		"declaration-property-value-disallowed-list": {

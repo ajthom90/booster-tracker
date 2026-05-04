@@ -33,11 +33,13 @@
 		justify-content: center;
 		flex-wrap: wrap;
 	}
+
 	a {
 		color: inherit;
 		font-weight: 600;
 		text-decoration: underline;
 	}
+
 	a:hover {
 		text-decoration: none;
 	}
