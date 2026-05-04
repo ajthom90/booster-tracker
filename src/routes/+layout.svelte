@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { m, localizedPath } from '$lib/i18n/runtime';
 	import { stripLocalePrefix } from '$lib/i18n/locale-detect';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children, data }: { children?: Snippet; data: { locale: string } } = $props();
@@ -43,6 +44,7 @@
 				>
 				<a href={statsHref} class="nav-link" class:active={onStats}>Stats</a>
 			</nav>
+			<LanguageSwitcher activeLocale={data.locale} />
 		</div>
 	</header>
 
