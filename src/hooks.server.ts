@@ -1,7 +1,9 @@
 import type { Handle } from '@sveltejs/kit';
 import { runMigrations } from '$lib/server/db/migrate';
 import { startScheduler } from '$lib/server/sync/scheduler';
-import { setLocale, baseLocale } from '$lib/i18n/runtime';
+import { setLocale } from '$lib/i18n/runtime';
+import { detectLocale } from '$lib/i18n/locale-detect';
+import { getLocaleDir } from '$lib/i18n/locale-meta';
 
 let booted = false;
 function bootOnce() {
@@ -16,9 +18,16 @@ function bootOnce() {
 bootOnce();
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Phase 1: lock locale to baseLocale (en). Phase 3 extends this with
-	// URL-prefix detection, Accept-Language fallback, and language switcher.
-	setLocale(baseLocale);
-	event.locals.locale = baseLocale;
-	return resolve(event);
+	const acceptLanguage = event.request.headers.get('accept-language');
+	const locale = detectLocale(event.url.pathname, acceptLanguage);
+
+	setLocale(locale as 'en' | 'es' | 'fr' | 'de' | 'ar' | 'he' | 'zh-Hans');
+	event.locals.locale = locale;
+
+	return resolve(event, {
+		transformPageChunk: ({ html }) => {
+			const dir = getLocaleDir(locale);
+			return html.replace('%sveltekit.html.attributes%', `lang="${locale}" dir="${dir}"`);
+		}
+	});
 };
