@@ -15,6 +15,7 @@
 		"test": "vitest --run",
 		"test:e2e": "playwright test",
 		"seed": "node --import tsx src/lib/seed.ts",
+		"seed:translations": "node --import tsx scripts/seed-translations.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:push": "drizzle-kit push"
 	},
