@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { resolve } from '$app/paths';
 	import type { ResolvedPathname } from '$app/types';
-	import { m, formatDate } from '$lib/i18n/runtime';
+	import { m, formatDate, localizedPath } from '$lib/i18n/runtime';
 	import LaunchStatusBadge from '$lib/components/LaunchStatusBadge.svelte';
 	import BoosterStatusBadge from '$lib/components/BoosterStatusBadge.svelte';
 
@@ -20,7 +19,7 @@
 	let embedUrl = $derived(youtubeEmbedUrl(l.webcastUrl));
 
 	function boosterHref(serial: string): ResolvedPathname {
-		return (resolve('/boosters') + '/' + serial) as ResolvedPathname;
+		return localizedPath(data.locale, `/boosters/${serial}`) as ResolvedPathname;
 	}
 
 	function landingCellText(s: (typeof data.stages)[number]): string {

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { resolve } from '$app/paths';
 	import type { ResolvedPathname } from '$app/types';
-	import { m, formatNumber } from '$lib/i18n/runtime';
+	import { m, formatNumber, localizedPath } from '$lib/i18n/runtime';
 	import ChartCard from '$lib/components/ChartCard.svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -122,7 +121,7 @@
 	});
 
 	function boosterHref(serial: string): ResolvedPathname {
-		return (resolve('/boosters') + '/' + serial) as ResolvedPathname;
+		return localizedPath(data.locale, `/boosters/${serial}`) as ResolvedPathname;
 	}
 </script>
 

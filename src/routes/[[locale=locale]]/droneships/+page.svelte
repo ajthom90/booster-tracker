@@ -2,9 +2,8 @@
 	import type { PageData } from './$types';
 	import type { ResolvedPathname } from '$app/types';
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { m, formatNumber, resolveLabel } from '$lib/i18n/runtime';
+	import { m, formatNumber, resolveLabel, localizedPath } from '$lib/i18n/runtime';
 	import { encodeViewState, type FilterClause, type SortClause } from '$lib/url-state';
 	import AggregateBar from '$lib/components/AggregateBar.svelte';
 	import FilterChipBar from '$lib/components/FilterChipBar.svelte';
@@ -12,7 +11,7 @@
 	import ExportMenu from '$lib/components/ExportMenu.svelte';
 	import PresetsMenu from '$lib/components/PresetsMenu.svelte';
 
-	type LaunchpadRow = PageData['rows'][number];
+	type LocationRow = PageData['rows'][number];
 
 	let { data }: { data: PageData } = $props();
 
@@ -30,7 +29,7 @@
 		});
 		const url = new URL(page.url);
 		url.searchParams.set('v', next);
-		const target = (resolve('/launchpads') + url.search) as ResolvedPathname;
+		const target = (localizedPath(data.locale, '/droneships') + url.search) as ResolvedPathname;
 		goto(target, { keepFocus: true, noScroll: true });
 	}
 
@@ -52,45 +51,63 @@
 
 	let visible = $derived(new Set(data.visibleCols));
 
-	function cellValue(row: LaunchpadRow, colId: string): string {
+	function cellValue(row: LocationRow, colId: string): string {
 		switch (colId) {
 			case 'name':
 				return ''; // rendered specially as a link
-			case 'full_name':
-				return row.fullName ?? '';
-			case 'location':
-				return row.location ?? '';
-			case 'country_code':
-				return row.countryCode ?? '';
-			case 'total_launches':
-				return formatNumber(row.totalLaunches ?? 0);
+			case 'location_type':
+				return ''; // rendered specially as a pill
+			case 'abbrev':
+				return row.abbrev ?? '';
+			case 'successful_landings':
+				return formatNumber(row.successfulLandings ?? 0);
+			case 'attempted_landings':
+				return formatNumber(row.attemptedLandings ?? 0);
 			default:
 				return '';
 		}
 	}
 
-	function launchpadHref(slug: string): ResolvedPathname {
-		return `/launchpads/${slug}` as ResolvedPathname;
+	function locationHref(slug: string): ResolvedPathname {
+		return localizedPath(data.locale, `/locations/${slug}`) as ResolvedPathname;
+	}
+
+	function locTypeKey(locationType: string | null | undefined): string {
+		const t = (locationType ?? '').toLowerCase();
+		if (t.includes('drone ship') || t === 'asds') return 'asds';
+		if (t.includes('return to launch') || t === 'rtls') return 'rtls';
+		if (t === 'ocean' || t.includes('ocean')) return 'ocean';
+		if (t === 'expended') return 'expended';
+		return 'unknown';
+	}
+
+	function locTypeShortLabel(locationType: string | null | undefined): string {
+		const t = (locationType ?? '').toLowerCase();
+		if (t.includes('drone ship') || t === 'asds') return 'ASDS';
+		if (t.includes('return to launch') || t === 'rtls') return 'RTLS';
+		if (t === 'ocean' || t.includes('ocean')) return 'Ocean';
+		if (t === 'expended') return 'Expended';
+		return locationType ?? '—';
 	}
 
 	let totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 </script>
 
-<svelte:head><title>{m.launchpads_page_title()} · {m.site_title()}</title></svelte:head>
+<svelte:head><title>{m.locations_page_title()} · {m.site_title()}</title></svelte:head>
 
 <header class="page-header">
 	<div class="page-header-text">
-		<h1>{m.launchpads_page_title()}</h1>
-		<p class="subtitle">{m.launchpads_page_subtitle()}</p>
+		<h1>{m.locations_page_title()}</h1>
+		<p class="subtitle">{m.locations_page_subtitle()}</p>
 	</div>
 	<div class="actions">
-		<ExportMenu apiBase="/api/launchpads/export" />
+		<ExportMenu apiBase="/api/droneships/export" />
 		<ColumnsMenu
 			columns={data.columns}
 			visible={data.visibleCols}
 			onChange={(next) => navigateWith({ visibleCols: next })}
 		/>
-		<PresetsMenu storageKey="launchpads" basePath="/launchpads" />
+		<PresetsMenu storageKey="droneships" basePath="/droneships" locale={data.locale} />
 	</div>
 </header>
 
@@ -103,7 +120,11 @@
 <AggregateBar
 	tiles={[
 		{ label: m.agg_showing(), value: data.aggregates.count, denom: data.total },
-		{ label: m.agg_launchpads_total_launches(), value: data.aggregates.totalLaunches }
+		{ label: m.agg_locations_total_attempts(), value: data.aggregates.totalAttempted },
+		{
+			label: m.agg_locations_success_rate(),
+			value: `${(data.aggregates.successRate * 100).toFixed(1)}%`
+		}
 	]}
 />
 
@@ -116,7 +137,7 @@
 					<th
 						onclick={(e) => toggleSort(col.id, e)}
 						class:sorted={!!sortInfo}
-						class:numeric={col.id === 'total_launches'}
+						class:numeric={col.id === 'successful_landings' || col.id === 'attempted_landings'}
 					>
 						<span class="th-content">
 							<span class="th-label">{resolveLabel(col.label)}</span>
@@ -136,9 +157,13 @@
 			{#each data.rows as row (row.id)}
 				<tr>
 					{#each data.columns.filter((c) => visible.has(c.id)) as col (col.id)}
-						<td class:numeric={col.id === 'total_launches'}>
+						<td class:numeric={col.id === 'successful_landings' || col.id === 'attempted_landings'}>
 							{#if col.id === 'name'}
-								<a class="launchpad-link" href={launchpadHref(row.slug)}>{row.name}</a>
+								<a class="location-link" href={locationHref(row.slug)}>{row.name}</a>
+							{:else if col.id === 'location_type'}
+								<span class="loc-type loc-type-{locTypeKey(row.locationType)}"
+									>{locTypeShortLabel(row.locationType)}</span
+								>
 							{:else}
 								{cellValue(row, col.id)}
 							{/if}
@@ -279,13 +304,55 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	.launchpad-link {
+	.location-link {
 		color: var(--accent);
 		text-decoration: none;
 	}
 
-	.launchpad-link:hover {
+	.location-link:hover {
 		text-decoration: underline;
+	}
+
+	.loc-type {
+		display: inline-block;
+		font-size: 0.7rem;
+		font-weight: 600;
+		padding-block: 0.125rem;
+		padding-inline: 0.5rem;
+		border-radius: var(--radius-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		border: 1px solid transparent;
+	}
+
+	.loc-type-asds {
+		background: #dbeafe;
+		color: #1e40af;
+		border-color: #bfdbfe;
+	}
+
+	.loc-type-rtls {
+		background: #fed7aa;
+		color: #9a3412;
+		border-color: #fdba74;
+	}
+
+	.loc-type-ocean {
+		background: #f1f5f9;
+		color: #475569;
+		border-color: #e2e8f0;
+	}
+
+	.loc-type-expended {
+		background: #fee2e2;
+		color: #991b1b;
+		border-color: #fecaca;
+	}
+
+	.loc-type-unknown {
+		background: #f3f4f6;
+		color: #6b7280;
+		border-color: #e5e7eb;
 	}
 
 	tbody tr {

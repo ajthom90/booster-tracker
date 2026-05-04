@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import { m } from '$lib/i18n/runtime';
+	import type { ResolvedPathname } from '$app/types';
+	import { m, localizedPath } from '$lib/i18n/runtime';
 
-	const boostersHref = resolve('/boosters');
+	let { data }: { data: { locale: string } } = $props();
+	let boostersHref = $derived(localizedPath(data.locale, '/boosters') as ResolvedPathname);
 </script>
 
 <svelte:head><title>{m.site_title()}</title></svelte:head>

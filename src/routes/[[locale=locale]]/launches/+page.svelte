@@ -2,9 +2,8 @@
 	import type { PageData } from './$types';
 	import type { ResolvedPathname } from '$app/types';
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { m, formatDate, resolveLabel } from '$lib/i18n/runtime';
+	import { m, formatDate, resolveLabel, localizedPath } from '$lib/i18n/runtime';
 	import { encodeViewState, type FilterClause, type SortClause } from '$lib/url-state';
 	import AggregateBar from '$lib/components/AggregateBar.svelte';
 	import FilterChipBar from '$lib/components/FilterChipBar.svelte';
@@ -31,7 +30,7 @@
 		});
 		const url = new URL(page.url);
 		url.searchParams.set('v', next);
-		const target = (resolve('/launches') + url.search) as ResolvedPathname;
+		const target = (localizedPath(data.locale, '/launches') + url.search) as ResolvedPathname;
 		goto(target, { keepFocus: true, noScroll: true });
 	}
 
@@ -75,7 +74,7 @@
 	}
 
 	function launchHref(slug: string): ResolvedPathname {
-		return (resolve('/launches') + '/' + slug) as ResolvedPathname;
+		return localizedPath(data.locale, `/launches/${slug}`) as ResolvedPathname;
 	}
 
 	let totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
@@ -95,7 +94,7 @@
 			visible={data.visibleCols}
 			onChange={(next) => navigateWith({ visibleCols: next })}
 		/>
-		<PresetsMenu storageKey="launches" basePath="/launches" />
+		<PresetsMenu storageKey="launches" basePath="/launches" locale={data.locale} />
 	</div>
 </header>
 

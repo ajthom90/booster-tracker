@@ -1,30 +1,28 @@
 <script lang="ts">
 	import type { ResolvedPathname } from '$app/types';
 	import '../app.css';
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { m } from '$lib/i18n/runtime';
-	let { children } = $props();
+	import { m, localizedPath } from '$lib/i18n/runtime';
+	import { stripLocalePrefix } from '$lib/i18n/locale-detect';
+	import type { Snippet } from 'svelte';
 
-	const boostersHref = resolve('/boosters');
-	const launchesHref = resolve('/launches');
-	const droneShipsHref = resolve('/boosters').replace(
-		'/boosters',
-		'/droneships'
-	) as ResolvedPathname;
-	const launchpadsHref = resolve('/boosters').replace(
-		'/boosters',
-		'/launchpads'
-	) as ResolvedPathname;
-	const statsHref = resolve('/stats');
-	const homeHref = resolve('/');
-	let onBoosters = $derived(page.url.pathname.startsWith('/boosters'));
-	let onLaunches = $derived(page.url.pathname.startsWith('/launches'));
+	let { children, data }: { children?: Snippet; data: { locale: string } } = $props();
+
+	let boostersHref = $derived(localizedPath(data.locale, '/boosters') as ResolvedPathname);
+	let launchesHref = $derived(localizedPath(data.locale, '/launches') as ResolvedPathname);
+	let droneShipsHref = $derived(localizedPath(data.locale, '/droneships') as ResolvedPathname);
+	let launchpadsHref = $derived(localizedPath(data.locale, '/launchpads') as ResolvedPathname);
+	let statsHref = $derived(localizedPath(data.locale, '/stats') as ResolvedPathname);
+	let homeHref = $derived(localizedPath(data.locale, '/') as ResolvedPathname);
+
+	let pathWithoutLocale = $derived(stripLocalePrefix(page.url.pathname).rest);
+	let onBoosters = $derived(pathWithoutLocale.startsWith('/boosters'));
+	let onLaunches = $derived(pathWithoutLocale.startsWith('/launches'));
 	let onDroneships = $derived(
-		page.url.pathname.startsWith('/droneships') || page.url.pathname.startsWith('/locations')
+		pathWithoutLocale.startsWith('/droneships') || pathWithoutLocale.startsWith('/locations')
 	);
-	let onLaunchpads = $derived(page.url.pathname.startsWith('/launchpads'));
-	let onStats = $derived(page.url.pathname.startsWith('/stats'));
+	let onLaunchpads = $derived(pathWithoutLocale.startsWith('/launchpads'));
+	let onStats = $derived(pathWithoutLocale.startsWith('/stats'));
 </script>
 
 <div class="app-shell">

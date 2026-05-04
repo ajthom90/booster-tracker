@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import type { ResolvedPathname } from '$app/types';
 	import { page } from '$app/state';
-	import { m } from '$lib/i18n/runtime';
+	import { m, localizedPath } from '$lib/i18n/runtime';
 
 	let {
 		storageKey = 'boosters',
-		basePath = '/boosters'
+		basePath = '/boosters',
+		locale = 'en'
 	}: {
 		storageKey?: string;
 		basePath?: string;
+		locale?: string;
 	} = $props();
 
 	let STORAGE_KEY = $derived(`boosterTracker.presets.${storageKey}`);
@@ -42,9 +43,8 @@
 
 	function load(p: Preset) {
 		open = false;
-		// Cast required because resolve() is overload-typed with literal route strings.
-		const resolveAny = resolve as (path: string) => string;
-		const dest = (resolveAny(basePath) + `?v=${encodeURIComponent(p.v)}`) as ResolvedPathname;
+		const dest = (localizedPath(locale, basePath) +
+			`?v=${encodeURIComponent(p.v)}`) as ResolvedPathname;
 		goto(dest);
 	}
 

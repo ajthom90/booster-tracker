@@ -2,18 +2,16 @@
 	import type { PageData } from './$types';
 	import type { ResolvedPathname } from '$app/types';
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { m, formatDate, formatDaysSince, resolveLabel } from '$lib/i18n/runtime';
+	import { m, formatNumber, resolveLabel, localizedPath } from '$lib/i18n/runtime';
 	import { encodeViewState, type FilterClause, type SortClause } from '$lib/url-state';
 	import AggregateBar from '$lib/components/AggregateBar.svelte';
 	import FilterChipBar from '$lib/components/FilterChipBar.svelte';
 	import ColumnsMenu from '$lib/components/ColumnsMenu.svelte';
 	import ExportMenu from '$lib/components/ExportMenu.svelte';
 	import PresetsMenu from '$lib/components/PresetsMenu.svelte';
-	import BoosterStatusBadge from '$lib/components/BoosterStatusBadge.svelte';
 
-	type BoosterRow = PageData['rows'][number];
+	type LaunchpadRow = PageData['rows'][number];
 
 	let { data }: { data: PageData } = $props();
 
@@ -31,7 +29,7 @@
 		});
 		const url = new URL(page.url);
 		url.searchParams.set('v', next);
-		const target = (resolve('/boosters') + url.search) as ResolvedPathname;
+		const target = (localizedPath(data.locale, '/launchpads') + url.search) as ResolvedPathname;
 		goto(target, { keepFocus: true, noScroll: true });
 	}
 
@@ -53,49 +51,45 @@
 
 	let visible = $derived(new Set(data.visibleCols));
 
-	function cellValue(row: BoosterRow, colId: string) {
+	function cellValue(row: LaunchpadRow, colId: string): string {
 		switch (colId) {
-			case 'serial_number':
-				return row.serialNumber;
-			case 'status':
-				return null; // rendered specially via BoosterStatusBadge
-			case 'flights':
-				return row.flights;
-			case 'first_launch_date':
-				return formatDate(row.firstLaunchDate);
-			case 'last_launch_date':
-				return formatDate(row.lastLaunchDate);
-			case 'days_since_last_flight':
-				return formatDaysSince(row.lastLaunchDate);
-			case 'successful_landings':
-				return row.successfulLandings;
-			case 'attempted_landings':
-				return row.attemptedLandings;
-			case 'block':
-				return ''; // requires launcher_config join — Phase 1 leaves blank if not loaded
+			case 'name':
+				return ''; // rendered specially as a link
+			case 'full_name':
+				return row.fullName ?? '';
+			case 'location':
+				return row.location ?? '';
+			case 'country_code':
+				return row.countryCode ?? '';
+			case 'total_launches':
+				return formatNumber(row.totalLaunches ?? 0);
 			default:
 				return '';
 		}
 	}
 
+	function launchpadHref(slug: string): ResolvedPathname {
+		return localizedPath(data.locale, `/launchpads/${slug}`) as ResolvedPathname;
+	}
+
 	let totalPages = $derived(Math.max(1, Math.ceil(data.total / data.pageSize)));
 </script>
 
-<svelte:head><title>{m.boosters_page_title()} · {m.site_title()}</title></svelte:head>
+<svelte:head><title>{m.launchpads_page_title()} · {m.site_title()}</title></svelte:head>
 
 <header class="page-header">
 	<div class="page-header-text">
-		<h1>{m.boosters_page_title()}</h1>
-		<p class="subtitle">{m.boosters_page_subtitle()}</p>
+		<h1>{m.launchpads_page_title()}</h1>
+		<p class="subtitle">{m.launchpads_page_subtitle()}</p>
 	</div>
 	<div class="actions">
-		<ExportMenu />
+		<ExportMenu apiBase="/api/launchpads/export" />
 		<ColumnsMenu
 			columns={data.columns}
 			visible={data.visibleCols}
 			onChange={(next) => navigateWith({ visibleCols: next })}
 		/>
-		<PresetsMenu />
+		<PresetsMenu storageKey="launchpads" basePath="/launchpads" locale={data.locale} />
 	</div>
 </header>
 
@@ -108,12 +102,7 @@
 <AggregateBar
 	tiles={[
 		{ label: m.agg_showing(), value: data.aggregates.count, denom: data.total },
-		{ label: m.agg_avg_flights(), value: data.aggregates.avgFlights.toFixed(1) },
-		{ label: m.agg_total_landings(), value: data.aggregates.totalLandings },
-		{
-			label: m.agg_landing_success_rate(),
-			value: `${(data.aggregates.successRate * 100).toFixed(1)}%`
-		}
+		{ label: m.agg_launchpads_total_launches(), value: data.aggregates.totalLaunches }
 	]}
 />
 
@@ -126,10 +115,7 @@
 					<th
 						onclick={(e) => toggleSort(col.id, e)}
 						class:sorted={!!sortInfo}
-						class:numeric={col.id === 'flights' ||
-							col.id === 'successful_landings' ||
-							col.id === 'attempted_landings' ||
-							col.id === 'days_since_last_flight'}
+						class:numeric={col.id === 'total_launches'}
 					>
 						<span class="th-content">
 							<span class="th-label">{resolveLabel(col.label)}</span>
@@ -146,25 +132,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.rows as row (row.serialNumber)}
+			{#each data.rows as row (row.id)}
 				<tr>
 					{#each data.columns.filter((c) => visible.has(c.id)) as col (col.id)}
-						<td
-							class:numeric={col.id === 'flights' ||
-								col.id === 'successful_landings' ||
-								col.id === 'attempted_landings' ||
-								col.id === 'days_since_last_flight'}
-							class:mono={col.id === 'serial_number'}
-						>
-							{#if col.id === 'serial_number'}
-								{@const detailHref = (resolve('/boosters') +
-									'/' +
-									row.serialNumber) as ResolvedPathname}
-								<a class="serial-link" href={detailHref}>{row.serialNumber}</a>
-							{:else if col.id === 'status'}
-								<BoosterStatusBadge status={row.status ?? 'unknown'} />
+						<td class:numeric={col.id === 'total_launches'}>
+							{#if col.id === 'name'}
+								<a class="launchpad-link" href={launchpadHref(row.slug)}>{row.name}</a>
 							{:else}
-								{cellValue(row, col.id) ?? ''}
+								{cellValue(row, col.id)}
 							{/if}
 						</td>
 					{/each}
@@ -303,18 +278,12 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	td.mono {
-		font-family: var(--font-mono);
-		font-size: 0.88rem;
-	}
-
-	.serial-link {
-		color: var(--accent-strong);
-		font-weight: 600;
+	.launchpad-link {
+		color: var(--accent);
 		text-decoration: none;
 	}
 
-	.serial-link:hover {
+	.launchpad-link:hover {
 		text-decoration: underline;
 	}
 

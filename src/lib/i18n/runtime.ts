@@ -27,3 +27,14 @@ export function resolveLabel(key: string): string {
 	const fn = (m as unknown as Record<string, () => string>)[key];
 	return typeof fn === 'function' ? fn() : key;
 }
+
+/**
+ * Build a path with the active locale's URL prefix. English (the base locale)
+ * stays unprefixed; all other locales get a `/<code>` prefix.
+ */
+export function localizedPath(locale: string, path: string): string {
+	if (locale === 'en') return path;
+	if (path === '/') return `/${locale}`;
+	const sep = path.startsWith('/') ? '' : '/';
+	return `/${locale}${sep}${path}`;
+}

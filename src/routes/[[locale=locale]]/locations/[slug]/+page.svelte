@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { resolve } from '$app/paths';
 	import type { ResolvedPathname } from '$app/types';
-	import { m, formatDate, formatNumber } from '$lib/i18n/runtime';
+	import { m, formatDate, formatNumber, localizedPath } from '$lib/i18n/runtime';
 
 	let { data }: { data: PageData } = $props();
 	let loc = $derived(data.location);
@@ -12,10 +11,10 @@
 	let successRate = $derived(attempted === 0 ? 0 : successful / attempted);
 
 	function launchHref(slug: string): ResolvedPathname {
-		return (resolve('/launches') + '/' + slug) as ResolvedPathname;
+		return localizedPath(data.locale, `/launches/${slug}`) as ResolvedPathname;
 	}
 	function boosterHref(serial: string): ResolvedPathname {
-		return (resolve('/boosters') + '/' + serial) as ResolvedPathname;
+		return localizedPath(data.locale, `/boosters/${serial}`) as ResolvedPathname;
 	}
 
 	function locTypeKey(t: string | null | undefined): string {

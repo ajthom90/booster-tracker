@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { resolve } from '$app/paths';
 	import type { ResolvedPathname } from '$app/types';
-	import { m, formatDate, formatNumber } from '$lib/i18n/runtime';
+	import { m, formatDate, formatNumber, localizedPath } from '$lib/i18n/runtime';
 	import LaunchStatusBadge from '$lib/components/LaunchStatusBadge.svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -12,7 +11,7 @@
 	let successRate = $derived(decided === 0 ? 0 : (counts.successes ?? 0) / decided);
 
 	function launchHref(slug: string): ResolvedPathname {
-		return (resolve('/launches') + '/' + slug) as ResolvedPathname;
+		return localizedPath(data.locale, `/launches/${slug}`) as ResolvedPathname;
 	}
 </script>
 
