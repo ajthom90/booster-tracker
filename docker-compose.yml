@@ -1,8 +1,5 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
     image: ghcr.io/ajthom90/booster-tracker:latest
     container_name: booster-tracker
     restart: unless-stopped
