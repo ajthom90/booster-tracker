@@ -111,28 +111,33 @@
 	.page-header {
 		padding-block-end: var(--space-3);
 	}
+
 	.subtitle {
 		color: var(--text-muted);
 		margin-block-start: 0.25rem;
 	}
+
 	.counts-grid {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
 		gap: var(--space-3);
 		margin-block: var(--space-4);
 	}
+
 	.tile {
 		background: var(--surface-elevated);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		padding: var(--space-3);
 	}
+
 	.label {
 		font-size: 0.7rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		color: var(--text-muted);
 	}
+
 	.value {
 		font-size: 1.5rem;
 		font-weight: 700;
@@ -145,6 +150,7 @@
 		gap: var(--space-3);
 		padding-block: var(--space-3);
 	}
+
 	button.primary {
 		background: var(--accent);
 		color: white;
@@ -156,10 +162,12 @@
 		cursor: pointer;
 		font-family: inherit;
 	}
+
 	button.primary:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
+
 	.trigger-msg {
 		color: var(--text-muted);
 		font-size: 0.9rem;
@@ -168,6 +176,7 @@
 	section {
 		padding-block: var(--space-3);
 	}
+
 	h2 {
 		font-size: 0.85rem;
 		text-transform: uppercase;
@@ -175,20 +184,24 @@
 		color: var(--text-muted);
 		margin-block-end: var(--space-3);
 	}
+
 	.empty {
 		color: var(--text-muted);
 	}
+
 	.table-wrap {
 		overflow-x: auto;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		background: var(--surface-elevated);
 	}
+
 	table {
 		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: 0.9rem;
 	}
+
 	th,
 	td {
 		padding-block: 0.5rem;
@@ -196,6 +209,7 @@
 		border-block-end: 1px solid var(--border);
 		text-align: start;
 	}
+
 	th {
 		background: var(--surface);
 		text-transform: uppercase;
@@ -203,19 +217,23 @@
 		font-size: 0.7rem;
 		color: var(--text-muted);
 	}
+
 	.mono {
 		font-family: var(--font-mono);
 	}
+
 	.date {
 		color: var(--text-muted);
 		white-space: nowrap;
 	}
+
 	.error {
 		color: var(--text-muted);
 		max-inline-size: 30ch;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+
 	.status {
 		display: inline-block;
 		font-size: 0.75rem;
@@ -224,22 +242,27 @@
 		padding-inline: 6px;
 		border-radius: var(--radius-sm);
 	}
+
 	.badge-ok {
 		background: #dcfce7;
 		color: #166534;
 	}
+
 	.badge-progress {
 		background: #dbeafe;
 		color: #1e40af;
 	}
+
 	.badge-error {
 		background: #fecaca;
 		color: #991b1b;
 	}
+
 	.badge-unknown {
 		background: var(--surface);
 		color: var(--text-muted);
 	}
+
 	@media (width <= 720px) {
 		.counts-grid {
 			grid-template-columns: repeat(2, 1fr);

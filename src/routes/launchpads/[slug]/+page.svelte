@@ -85,6 +85,7 @@
 	.header {
 		padding-block: var(--space-4);
 	}
+
 	.eyebrow {
 		display: inline-block;
 		font-size: 0.7rem;
@@ -94,11 +95,13 @@
 		font-weight: 700;
 		margin-block-end: var(--space-2);
 	}
+
 	h1 {
 		font-size: 1.875rem;
 		line-height: 1.2;
 		margin-block: 0;
 	}
+
 	.location {
 		color: var(--text-muted);
 		margin-block-start: var(--space-2);
@@ -106,6 +109,7 @@
 		align-items: center;
 		gap: var(--space-2);
 	}
+
 	.country {
 		display: inline-block;
 		background: var(--surface);
@@ -126,18 +130,21 @@
 		gap: var(--space-3);
 		padding-block: var(--space-3);
 	}
+
 	.stat-tile {
 		background: var(--surface-elevated);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		padding: var(--space-3);
 	}
+
 	.stat-label {
 		font-size: 0.7rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		color: var(--text-muted);
 	}
+
 	.stat-value {
 		font-size: 1.5rem;
 		font-weight: 700;
@@ -147,6 +154,7 @@
 	section {
 		padding-block: var(--space-4);
 	}
+
 	h2 {
 		font-size: 0.85rem;
 		text-transform: uppercase;
@@ -154,6 +162,7 @@
 		color: var(--text-muted);
 		margin-block-end: var(--space-3);
 	}
+
 	.empty {
 		color: var(--text-muted);
 	}
@@ -165,11 +174,13 @@
 		background: var(--surface-elevated);
 		box-shadow: var(--shadow-sm);
 	}
+
 	table {
 		inline-size: 100%;
 		border-collapse: collapse;
 		font-size: 0.9rem;
 	}
+
 	th,
 	td {
 		padding-block: 0.5rem;
@@ -177,6 +188,7 @@
 		border-block-end: 1px solid var(--border);
 		text-align: start;
 	}
+
 	th {
 		background: var(--surface);
 		text-transform: uppercase;
@@ -184,20 +196,25 @@
 		font-size: 0.7rem;
 		color: var(--text-muted);
 	}
+
 	tbody tr:hover {
 		background: var(--row-hover);
 	}
+
 	.date {
 		color: var(--text-muted);
 		white-space: nowrap;
 	}
+
 	a.mission-link {
 		color: var(--accent);
 		text-decoration: none;
 	}
+
 	a.mission-link:hover {
 		text-decoration: underline;
 	}
+
 	.note {
 		color: var(--text-muted);
 		font-size: 0.85rem;

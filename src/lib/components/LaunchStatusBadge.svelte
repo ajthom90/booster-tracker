@@ -27,39 +27,48 @@
 		font-weight: 500;
 		border: 1px solid transparent;
 	}
+
 	.badge::before {
 		content: '';
 		inline-size: 6px;
 		block-size: 6px;
 		border-radius: 999px;
-		background: currentColor;
+		background: currentcolor;
 		opacity: 0.7;
 	}
+
 	.badge-success {
 		background: #dcfce7;
 		color: #166534;
 		border-color: #bbf7d0;
 	}
+
 	.badge-failure {
 		background: #fecaca;
 		color: #991b1b;
 		border-color: #fca5a5;
 	}
+
+	/* stylelint-disable-next-line selector-class-pattern -- match schema enum tokens */
 	.badge-partial_failure {
 		background: #fed7aa;
 		color: #9a3412;
 		border-color: #fdba74;
 	}
+
 	.badge-upcoming {
 		background: #dbeafe;
 		color: #1e40af;
 		border-color: #bfdbfe;
 	}
+
+	/* stylelint-disable-next-line selector-class-pattern -- match schema enum tokens */
 	.badge-in_flight {
 		background: #fef3c7;
 		color: #854d0e;
 		border-color: #fde68a;
 	}
+
 	.badge-unknown {
 		background: #f3f4f6;
 		color: #6b7280;
