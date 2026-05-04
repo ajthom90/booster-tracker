@@ -157,5 +157,16 @@
 	"admin_th_status": "Status",
 	"admin_th_last_full": "Last full sync",
 	"admin_th_last_incremental": "Last incremental sync",
-	"admin_th_error": "Error"
+	"admin_th_error": "Error",
+	"translate_page_title": "Translate Booster Tracker",
+	"translate_page_subtitle": "Help make this site readable in your language.",
+	"translate_intro": "Booster Tracker is open source and translated by the community. Two paths are available — both result in PRs against the same message files in the GitHub repo.",
+	"translate_inlang_heading": "Inlang Fink",
+	"translate_inlang_body": "Inlang Fink is a web-based translation editor that pulls strings directly from this repository and submits PRs.",
+	"translate_inlang_cta": "Open in Fink",
+	"translate_crowdin_heading": "Crowdin",
+	"translate_crowdin_body": "Crowdin is a translation platform with a richer editor, glossary, and translation memory. Recommended for translators who already have a Crowdin account.",
+	"translate_crowdin_cta": "Open in Crowdin",
+	"translate_completion_heading": "Completion by locale",
+	"translate_completion_keys": "{translated} of {total} keys"
 }
